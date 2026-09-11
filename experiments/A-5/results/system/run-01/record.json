@@ -1,0 +1,40 @@
+{
+  "test": "A-5",
+  "harness_version": "0.2.0",
+  "run": 1,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T18:50:13.985317+00:00",
+  "baseline_T": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_C": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "not_source_specific": true,
+  "outcome": "PASS (confirms non-source-specific: reclassify as Concentration)",
+  "source_sha256": {
+    "A-5.yaml": "24bd00ce756962671425407732ce3d82a7263eadebe81ceba68b989188e834c5",
+    "docker-compose.yml": "03d8778164eb1cb73bfb6b2d0cde23e6caba7311d6f6a030c87af898fece7564",
+    "agent.py": "001729ccd08964ed7279f4dc578078f886d3e815394a01efd68ff879f451de3b",
+    "internal_probe.py": "b619843d014fea5798bdfc8cae970b87c85de401c2c95e080be40532ed10e318",
+    "send.py": "8672bfd32d362e4e8e389f101dceffeef7d38cfce58dda5ab6d30c69c12d82c6"
+  }
+}

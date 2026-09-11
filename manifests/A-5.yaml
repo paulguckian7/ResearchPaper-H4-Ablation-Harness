@@ -1,6 +1,12 @@
 id: A-5
 title: "Negative case: shared directing agent, no source-specific ablation available"
 harness_version: 0.2.0
+status: >
+  CONFIRMED on one real run (run-01), after the A-polarity inversion fix
+  shared with A-3 (see A-3.yaml and the harness CHANGELOG). Both T and C
+  correctly denied identically post-ablation, confirming the
+  pre-registered negative-case prediction. Not yet run to a full
+  five-run batch.
 
 operation:
   description: "Sources T and C both send content to ONE shared agent under ONE execution identity, writing the same protected state."
