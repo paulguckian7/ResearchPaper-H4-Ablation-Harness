@@ -1,0 +1,30 @@
+services:
+  resolver-d1:
+    build: { context: ./resolver-d1 }
+    container_name: h4-c4b-resolver-d1
+    environment: { TARGET_ADDRESS: "http://target:8080" }
+    ports: [ "127.0.0.1:18350:8080" ]
+    networks: [h4net]
+
+  resolver-d2:
+    build: { context: ./resolver-d2 }
+    container_name: h4-c4b-resolver-d2
+    environment: { TARGET_ADDRESS: "http://target:8080" }
+    ports: [ "127.0.0.1:18351:8080" ]
+    networks: [h4net]
+
+  target:
+    build: { context: ./target }
+    container_name: h4-c4b-target
+    ports: [ "127.0.0.1:18352:8080" ]
+    networks: [h4net]
+
+  client:
+    build: { context: ./client }
+    container_name: h4-c4b-client
+    depends_on: [resolver-d1, resolver-d2, target]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge

@@ -1,0 +1,41 @@
+services:
+  agent-t:
+    build:
+      context: ./agent
+    container_name: h4-a3-agent-t
+    ports:
+      - "127.0.0.1:18120:8080"
+    volumes: [a3t-data:/data]
+    networks: [h4net]
+
+  agent-c:
+    build:
+      context: ./agent
+    container_name: h4-a3-agent-c
+    ports:
+      - "127.0.0.1:18121:8080"
+    volumes: [a3c-data:/data]
+    networks: [h4net]
+
+  source-t:
+    build:
+      context: ./source
+    container_name: h4-a3-source-t
+    environment: {TARGET: "agent-t", SOURCE_NAME: "T"}
+    depends_on: [agent-t]
+    networks: [h4net]
+
+  source-c:
+    build:
+      context: ./source
+    container_name: h4-a3-source-c
+    environment: {TARGET: "agent-c", SOURCE_NAME: "C"}
+    depends_on: [agent-c]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a3t-data:
+  a3c-data:

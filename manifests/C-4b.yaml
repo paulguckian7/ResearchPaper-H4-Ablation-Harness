@@ -1,0 +1,19 @@
+id: C-4b
+title: "Cut, ecological validation: two independent resolvers (negative control)"
+harness_version: 0.2.0
+operation:
+  description: "Client resolves via resolver-d1 OR resolver-d2 (either suffices)."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface: {node: target, description: "Target's /fwd, reachable via either resolver"}
+acting_mechanism: {description: "Target worker", execution_identity: "target process", protected_state: "/data/state.json"}
+node_partition: [client, resolver-d1, resolver-d2, target]
+governance: {system: {client: D1, resolver-d1: D1, resolver-d2: D1, target: D1}}
+assessed_cut: {description: "resolver-d1 is NOT a Cut: resolver-d2 is on fully independent infrastructure (no shared component)."}
+ablation: {description: "Stop resolver-d1 only.", changed_relation: "Execution Pathway (one of two independent resolvers) only"}
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 1, 1, 1]
+classification_rule:
+  pass: "baseline==[1,1,1,1] AND post==[1,1,1,1] -- confirms resolver-d1 was correctly assessed as not a Cut"
+  fail: "post shows X=0 or O=0"
+  ambiguous: "required presence/absence evidence cannot be established"

@@ -1,0 +1,54 @@
+id: A-2
+title: "Conferring Authority ablation: mutual TLS client-certificate role mapping"
+harness_version: 0.2.0
+
+operation:
+  description: "source-t presents a client certificate signed by CA-T over mTLS and posts to /admin-write."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: rp
+  description: "TLS layer's client-certificate verification against the trust bundle (CA-T, CA-C)"
+
+acting_mechanism:
+  description: "RP's role_policy check, keyed on the client certificate's CN, and state write"
+  execution_identity: "rp process"
+  protected_state: "/data/state.json (on rp); Authority state is role_policy, held in RP memory"
+
+node_partition: [source-t, source-c, rp]
+governance:
+  system: {source-t: D2, source-c: D1, rp: D1}
+
+ablation:
+  description: >
+    SCOPE_REMOVE T admin: removes 'admin' from CN=T's allowed roles.
+    CA-T stays in the trust bundle, so the TLS handshake for a
+    CA-T-signed client certificate still succeeds.
+  changed_relation: "Authority only, specific to CA-T-issued clients"
+
+control:
+  description: "source-c is unaffected throughout."
+
+sanity_check:
+  description: >
+    A client presenting no certificate at all fails at the TLS
+    handshake itself (SSLEOFError), before any application code runs.
+    This is a stronger Interface/Authority separation than A-1's,
+    because the check happens at the transport layer, not in
+    application logic.
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction_T: [1, 1, 0, 0]
+control_prediction_C: [1, 1, 1, 1]
+
+measurement:
+  I: {baseline: "mTLS handshake succeeds against CA-T in the trust bundle", post: "still succeeds -- CA-T is untouched"}
+  X: {baseline: "handler_reached logged with the certificate CN", post: "still logged"}
+  A: {baseline: "role_policy['T'] contains 'admin'; write succeeds", post: "role_policy['T'] does not contain 'admin'; authority_denied logged"}
+  O: {baseline: "test_value 0 -> 42", post: "test_value remains 0"}
+
+classification_rule:
+  pass: "baseline==[1,1,1,1] for T and C; post==[1,1,0,0] for T; control==[1,1,1,1] for C; no-cert sanity check fails at the TLS layer"
+  fail: "measured evidence contradicts a predicted value, or a request with no client certificate reaches the application layer"
+  ambiguous: "required presence/absence evidence cannot be established"

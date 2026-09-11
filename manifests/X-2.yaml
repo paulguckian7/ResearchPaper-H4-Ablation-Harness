@@ -1,0 +1,47 @@
+id: X-2
+title: "Commodity reverse-proxy Channel ablation (nginx)"
+harness_version: 0.2.0
+status: "UNTESTED -- nginx was not available to verify locally."
+
+operation:
+  description: "Source posts through nginx's /fwd location mapping to the sink."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: proxy
+  description: "nginx's admission of requests to /fwd (TCP accept + request parsing) -- independent of whether a location mapping exists"
+
+acting_mechanism:
+  description: "Sink worker"
+  execution_identity: "sink process"
+  protected_state: "/data/state.json (on sink)"
+
+node_partition: [source, proxy, sink]
+governance: {system: {source: D1, proxy: D1, sink: D1}}
+
+ablation:
+  description: >
+    Swap nginx.conf for nginx.ablated.conf, which removes the /fwd
+    location mapping (returns 404 for everything instead of proxying),
+    and run 'nginx -s reload' for a graceful config reload. The proxy
+    process is not restarted or replaced.
+  changed_relation: "Execution Pathway (Channel) only"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 0, 1, 0]
+
+measurement:
+  I: {baseline: "nginx accepts and parses the /fwd request (connection succeeds)", post: "nginx still accepts the connection -- it returns 404 at the application layer, not a connection refusal"}
+  X: {baseline: "pinned marker probe reaches the sink via nginx", post: "marker probe gets 404 from nginx, never reaches the sink"}
+  A: {baseline: "AUTHORITY_PROBE at sink succeeds (direct, bypassing nginx)", post: "unchanged -- verified directly against the sink"}
+  O: {baseline: "test_value 0 -> 42", post: "test_value remains 0"}
+
+known_risks:
+  - "'nginx -s reload' requires the config file already be swapped in place and nginx to re-read successfully; if nginx.ablated.conf has a syntax error the reload silently keeps the old config running (nginx validates before applying) -- check container logs if X_post unexpectedly stays 1."
+  - "nginx's default error page for 404 is HTML, not JSON; the source script handles this, but double-check the raw response if anything looks wrong."
+
+classification_rule:
+  pass: "baseline==[1,1,1,1], post==[1,0,1,0], with I confirmed as still-admitted (not connection-refused) in the post state"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

@@ -1,0 +1,30 @@
+services:
+  router1:
+    build: { context: ./router1 }
+    container_name: h4-c2-router1
+    environment: { NEXT_HOP: "http://sink:8080" }
+    ports: [ "127.0.0.1:18150:8080" ]
+    networks: [h4net]
+
+  router2:
+    build: { context: ./router2 }
+    container_name: h4-c2-router2
+    environment: { NEXT_HOP: "http://sink:8080" }
+    ports: [ "127.0.0.1:18151:8080" ]
+    networks: [h4net]
+
+  sink:
+    build: { context: ./sink }
+    container_name: h4-c2-sink
+    ports: [ "127.0.0.1:18152:8080" ]
+    networks: [h4net]
+
+  client:
+    build: { context: ./client }
+    container_name: h4-c2-client
+    depends_on: [router1, router2, sink]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge

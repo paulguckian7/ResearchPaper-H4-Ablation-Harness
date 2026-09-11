@@ -1,0 +1,40 @@
+services:
+  target-t:
+    build: { context: ./target }
+    container_name: h4-a6-target-t
+    ports: [ "127.0.0.1:18170:8080" ]
+    volumes: [a6t-data:/data]
+    networks: [h4net]
+
+  target-c:
+    build: { context: ./target }
+    container_name: h4-a6-target-c
+    ports: [ "127.0.0.1:18171:8080" ]
+    volumes: [a6c-data:/data]
+    networks: [h4net]
+
+  resolver-t:
+    build: { context: ./resolver }
+    container_name: h4-a6-resolver-t
+    environment: { TARGET_ADDRESS: "http://target-t:8080" }
+    networks: [h4net]
+
+  resolver-c:
+    build: { context: ./resolver }
+    container_name: h4-a6-resolver-c
+    environment: { TARGET_ADDRESS: "http://target-c:8080" }
+    networks: [h4net]
+
+  client:
+    build: { context: ./client }
+    container_name: h4-a6-client
+    ports: [ "127.0.0.1:18172:8080" ]
+    depends_on: [resolver-t, resolver-c, target-t, target-c]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a6t-data:
+  a6c-data:

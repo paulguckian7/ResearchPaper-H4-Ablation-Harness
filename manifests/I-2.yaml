@@ -1,0 +1,50 @@
+id: I-2
+title: "Commodity broker Connection ablation (Eclipse Mosquitto, per-user ACL)"
+harness_version: 0.2.0
+status: "UNTESTED -- mosquitto and paho-mqtt were not available to verify locally. See harness README for what to check on first run."
+
+operation:
+  description: "source-t publishes to test/topic; receivers 1-3 (subscribed) should each receive it."
+  q0: "no message received"
+  q1: "message received with test_value=42"
+
+nominated_interface:
+  node: broker
+  description: "Mosquitto's per-user ACL check on PUBLISH to test/topic"
+
+acting_mechanism:
+  description: "Each receiver's own MQTT client session"
+  execution_identity: "receiver process"
+  protected_state: "n/a -- O is whether the message arrived, recorded by the receiver script"
+
+node_partition: [source-t, source-c, broker, receiver-1, receiver-2, receiver-3]
+governance:
+  system: {source-t: D2, source-c: D1, broker: D1, receiver-1: D1, receiver-2: D1, receiver-3: D1}
+
+ablation:
+  description: >
+    Replace the broker's acl.conf with acl.ablated.conf (removes
+    source-t's write permission on test/topic; source-t remains a
+    valid authenticated user) and send SIGHUP to reload. This changes
+    policy on the existing broker, per protocol A10 -- it does not stop
+    or replace the broker, and source-c's entry is untouched.
+  changed_relation: "Connection (I), specific to source-t"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [0, 1, 1, 0]
+
+measurement:
+  I: {baseline: "source-t's PUBLISH is accepted (PUBACK reason code 0)", post: "PUBLISH is refused (PUBACK reason code indicating not authorized, e.g. 135/151)"}
+  X: {baseline: "n/a for this row -- I-2 targets Connection/Interface", post: "n/a"}
+  A: {baseline: "n/a for this row", post: "n/a"}
+  O: {baseline: "each receiver's subscribe_and_record.py reports got_message=true", post: "each receiver reports got_message=false"}
+
+known_risks:
+  - "paho-mqtt 2.x callback API (CallbackAPIVersion.VERSION2) is used throughout but was never executed against a real broker in this build."
+  - "SIGHUP-triggered reload of acl_file is documented mosquitto behaviour but was not observed directly; if it does not take effect, restart the broker container instead and note the deviation from a pure policy-only ablation."
+  - "MQTT does not have an 'admission log' the way the constructed components do -- I is inferred from the PUBACK reason code, which needs QoS 1 (used here) to be meaningful."
+
+classification_rule:
+  pass: "baseline PUBACK 0 and receivers all got_message=true; post PUBACK != 0 and receivers all got_message=false; source-c control unaffected if tested"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "PUBACK reason code or receiver state cannot be established"

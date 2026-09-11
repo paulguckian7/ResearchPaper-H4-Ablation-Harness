@@ -1,0 +1,45 @@
+id: A-3
+title: "Constructed directing Authority ablation (dedicated content agent)"
+harness_version: 0.2.0
+
+operation:
+  description: "Source T causes agent-t to change test_value from 0 to 42 via /content."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: agent-t
+  description: "Agent HTTP listener /content (unconditional admission -- this configuration tests Authority, not Interface)"
+
+acting_mechanism:
+  description: "agent-t worker writing its own protected state"
+  execution_identity: "agent-t process identity (uid 10001)"
+  protected_state: "/data/state.json (on agent-t)"
+
+node_partition: [source-t, agent-t, source-c, agent-c]
+governance:
+  system: {source-t: D2, agent-t: D1, source-c: D1, agent-c: D1}
+
+control:
+  description: "source-c / agent-c is the control: same code, separate identity/state, unaffected by the ablation on agent-t."
+
+ablation:
+  description: "Remove agent-t's write permission on /data (chmod, via docker exec -u root), leaving T's content still admitted, parsed and routed to the handler."
+  changed_relation: "Authority only, specific to agent-t"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 1, 0, 0]
+control_prediction: [1, 1, 1, 1]
+
+measurement:
+  I: {baseline: "interface_admit at agent-t for T", post: "interface_admit still logged (admission unchanged)"}
+  X: {baseline: "handler_reached at agent-t", post: "handler_reached still logged (pathway unchanged)"}
+  A:
+    baseline: "ACCESS_STATE shows writable; AUTHORITY_PROBE succeeds; real op writes state"
+    post: "ACCESS_STATE shows NOT writable; AUTHORITY_PROBE denied; real op raises PermissionError, logged authority_denied"
+  O: {baseline: "test_value 0 -> 42", post: "test_value remains 0"}
+
+classification_rule:
+  pass: "baseline==[1,1,1,1], post==[1,1,0,0] for T, control==[1,1,1,1] for C, with required evidence"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

@@ -1,0 +1,39 @@
+id: X-1
+title: "Constructed Channel ablation (broker routing binding removed)"
+harness_version: 0.2.0
+
+operation:
+  description: "Source S causes sink M to change test_value from 0 to 42, via router's routing binding."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: router
+  description: "Router HTTP listener /fwd (admission of S's request)"
+
+acting_mechanism:
+  description: "Sink worker handling forwarded requests"
+  execution_identity: "sink process identity"
+  protected_state: "/data/state.json (on sink)"
+
+node_partition: [source, router, sink]
+governance:
+  system: {source: D1, router: D1, sink: D1}
+
+ablation:
+  description: "Remove the router's routing binding to the sink (REMOVE_BINDING), leaving admission at the router unchanged."
+  changed_relation: "Execution Pathway (Channel) only"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 0, 1, 0]
+
+measurement:
+  I: {baseline: "interface_admit at router for S", post: "interface_admit still logged at router for S"}
+  X: {baseline: "route_probe_reached at sink via marker sent through router", post: "route_absent at router; no route_probe_reached at sink"}
+  A: {baseline: "AUTHORITY_PROBE at sink succeeds", post: "AUTHORITY_PROBE at sink still succeeds (sink itself untouched)"}
+  O: {baseline: "sink test_value 0 -> 42", post: "sink test_value remains 0"}
+
+classification_rule:
+  pass: "baseline == [1,1,1,1] and post == [1,0,1,0], with required evidence"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

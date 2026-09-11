@@ -1,0 +1,23 @@
+services:
+  proxy:
+    build: { context: ./proxy }
+    container_name: h4-x2-proxy
+    ports: [ "127.0.0.1:18410:8080" ]
+    networks: [h4net]
+
+  sink:
+    build: { context: ./sink }
+    container_name: h4-x2-sink
+    ports: [ "127.0.0.1:18411:8080" ]
+    depends_on: [proxy]
+    networks: [h4net]
+
+  source:
+    build: { context: ./source }
+    container_name: h4-x2-source
+    depends_on: [proxy, sink]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge

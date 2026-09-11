@@ -1,0 +1,54 @@
+id: A-1
+title: "Conferring Authority ablation: OpenID-Connect-style RS256 JWT scoping"
+harness_version: 0.2.0
+
+operation:
+  description: "Issuer T mints a role=admin RS256 JWT and posts it to the relying party's /admin-write."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: rp
+  description: "RP's signature verification against its trust store (issuer public keys)"
+
+acting_mechanism:
+  description: "RP's role_policy check and state write"
+  execution_identity: "rp process"
+  protected_state: "/data/state.json (on rp); Authority state is role_policy, held in RP memory"
+
+node_partition: [issuer-t, issuer-c, rp]
+governance:
+  system: {issuer-t: D2, issuer-c: D1, rp: D1}
+
+ablation:
+  description: >
+    SCOPE_REMOVE issuer-t admin: removes 'admin' from issuer-t's allowed
+    roles in role_policy. issuer-t's public key stays in the trust store,
+    so its tokens continue to pass signature verification.
+  changed_relation: "Authority only, specific to issuer-t"
+
+control:
+  description: "issuer-c is unaffected throughout: same code, separate trust-store entry and role_policy entry."
+
+sanity_check:
+  description: >
+    A token with a forged signature claiming iss=issuer-t (signed with a
+    key NOT in the trust store) is rejected at signature verification
+    (I=0), never reaching the Authority check. This confirms I and A are
+    correctly separated: identity forgery fails at Interface; a
+    legitimately authenticated but descoped issuer fails at Authority.
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction_T: [1, 1, 0, 0]
+control_prediction_C: [1, 1, 1, 1]
+
+measurement:
+  I: {baseline: "RS256 signature verifies against issuer-t's trusted public key", post: "still verifies -- the key is untouched"}
+  X: {baseline: "handler_reached logged with claims", post: "still logged"}
+  A: {baseline: "role_policy['issuer-t'] contains 'admin'; write succeeds", post: "role_policy['issuer-t'] does not contain 'admin'; authority_denied logged"}
+  O: {baseline: "test_value 0 -> 42", post: "test_value remains 0"}
+
+classification_rule:
+  pass: "baseline==[1,1,1,1] for T and C; post==[1,1,0,0] for T; control==[1,1,1,1] for C; forged-signature sanity check gives I=0"
+  fail: "measured evidence contradicts a predicted value, or the forged-signature check reaches the Authority check (would mean I is not actually gating on signature validity)"
+  ambiguous: "required presence/absence evidence cannot be established"

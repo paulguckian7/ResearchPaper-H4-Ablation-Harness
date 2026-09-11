@@ -1,0 +1,31 @@
+id: C-4c
+title: "Cut at depth, ecological validation: shared upstream beneath two apparently independent resolvers"
+harness_version: 0.2.0
+operation:
+  description: "Client resolves via resolver-d1 or resolver-d2, both of which forward to gateway-h."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface: {node: target, description: "Target's /fwd"}
+acting_mechanism: {description: "Target worker", execution_identity: "target process", protected_state: "/data/state.json"}
+node_partition: [client, resolver-d1, resolver-d2, gateway-h, target]
+governance: {system: {client: D1, resolver-d1: D1, resolver-d2: D1, gateway-h: D1, target: D1}}
+assessed_cut:
+  description: >
+    At this depth, gateway-h is a Cut: both resolver-d1 and resolver-d2
+    forward every /resolve call to it. Neither resolver alone is a Cut.
+    This is the DNS-specific instance of the paper's depth-dependence
+    point: redundant-looking resolvers sharing an upstream is exactly
+    the shared-infrastructure case real DNS deployments can have
+    without it being visible from the resolver names alone.
+ablations:
+  - id: C-4c-i
+    description: "Stop gateway-h. Both resolvers fail to resolve."
+    prediction: [1, 0, 1, 0]
+  - id: C-4c-ii
+    description: "Separate fresh build. Stop resolver-d1 only. resolver-d2 still resolves via gateway-h."
+    prediction: [1, 1, 1, 1]
+baseline_prediction: [1, 1, 1, 1]
+classification_rule:
+  pass: "C-4c-i gives [1,0,1,0] AND C-4c-ii gives [1,1,1,1], each from a fresh build"
+  fail: "either ablation contradicts its predicted signature"
+  ambiguous: "required presence/absence evidence cannot be established"

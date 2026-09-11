@@ -1,0 +1,29 @@
+services:
+  rp:
+    build: { context: ./rp }
+    container_name: h4-a2-rp
+    ports:
+      - "127.0.0.1:18190:8080"
+      - "127.0.0.1:18191:8443"
+    volumes: [a2data:/data]
+    networks: [h4net]
+
+  source-t:
+    build: { context: ./source-t }
+    container_name: h4-a2-source-t
+    environment: { RP_URL: "https://rp:8443/admin-write" }
+    depends_on: [rp]
+    networks: [h4net]
+
+  source-c:
+    build: { context: ./source-c }
+    container_name: h4-a2-source-c
+    environment: { RP_URL: "https://rp:8443/admin-write" }
+    depends_on: [rp]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a2data:

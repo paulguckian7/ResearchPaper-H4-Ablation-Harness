@@ -1,0 +1,61 @@
+id: A-5
+title: "Negative case: shared directing agent, no source-specific ablation available"
+harness_version: 0.2.0
+
+operation:
+  description: "Sources T and C both send content to ONE shared agent under ONE execution identity, writing the same protected state."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: agent
+  description: "Shared agent HTTP listener /content, admits both T and C identically"
+
+acting_mechanism:
+  description: "The single shared agent worker, one execution identity, one protected state file"
+  execution_identity: "agent process identity (uid 10001)"
+  protected_state: "/data/state.json"
+
+node_partition: [source-t, source-c, agent]
+governance:
+  system: {source-t: D2, source-c: D1, agent: D1}
+
+pre_registered_prediction: >
+  No source-specific Authority ablation exists without redesign (protocol
+  rule A10). The only admissible ablation available (removing the agent's
+  write control) is not source-specific: it denies BOTH T and C identically.
+  This is therefore classified as a Concentration carrying a designation,
+  not as directing External Trust. This manifest predicts the ablation
+  will deny both sources together.
+
+candidate_ablations:
+  - candidate: "Remove agent's write control over /data (chmod, as in A-3)"
+    assessment: "Admissible ablation, but denies T and C identically -- not source-specific"
+    action: "run"
+  - candidate: "Filter in agent refusing T's requests by source header"
+    assessment: "Acts on admission/processing by source (A10) -- not an Authority ablation"
+    action: "not run"
+  - candidate: "Split agent into per-source instances with per-source permissions"
+    assessment: "Redesign (A10): creates two mechanisms where the baseline has one"
+    action: "not run"
+
+ablation:
+  description: "Remove the SHARED agent's write control over /data. Applied once; observed for BOTH T and C."
+  changed_relation: "Authority, but not source-specific -- this is the point being tested"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction_T: [1, 1, 0, 0]
+post_ablation_prediction_C: [1, 1, 0, 0]
+
+classification_rule:
+  pass: >
+    baseline for T and C both [1,1,1,1]; post-ablation for T and C BOTH
+    [1,1,0,0] (i.e. the denial is NOT source-specific). This CONFIRMS the
+    pre-registered prediction and supports reclassifying this relation as
+    Concentration rather than External Trust.
+  fail: >
+    post-ablation differs between T and C (e.g. T denied, C still
+    succeeds) WITHOUT any source-specific mechanism having been
+    introduced. This would falsify the pre-registered prediction and
+    require investigation of what made the denial source-specific.
+  ambiguous: "required presence/absence evidence cannot be established for either source"

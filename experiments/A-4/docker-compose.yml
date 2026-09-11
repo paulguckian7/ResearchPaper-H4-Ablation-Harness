@@ -1,0 +1,15 @@
+services:
+  scanner:
+    build: { context: ./scanner }
+    container_name: h4-a4-scanner
+    volumes:
+      - a4scan:/scan
+      - a4quarantine:/quarantine
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a4scan:
+  a4quarantine:

@@ -1,0 +1,31 @@
+services:
+  agent:
+    build:
+      context: ./agent
+    container_name: h4-a5-agent
+    ports:
+      - "127.0.0.1:18130:8080"
+    volumes: [a5data:/data]
+    networks: [h4net]
+
+  source-t:
+    build:
+      context: ./source
+    container_name: h4-a5-source-t
+    environment: {TARGET: "agent", SOURCE_NAME: "T"}
+    depends_on: [agent]
+    networks: [h4net]
+
+  source-c:
+    build:
+      context: ./source
+    container_name: h4-a5-source-c
+    environment: {TARGET: "agent", SOURCE_NAME: "C"}
+    depends_on: [agent]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a5data:

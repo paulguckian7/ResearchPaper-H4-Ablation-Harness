@@ -1,0 +1,20 @@
+id: C-4a
+title: "Cut, ecological validation: single authoritative resolver"
+harness_version: 0.2.0
+operation:
+  description: "Client resolves a zone via resolver-d1, then reaches target."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface: {node: target, description: "Target's /fwd, reachable only if resolution via resolver-d1 succeeds"}
+acting_mechanism: {description: "Target worker", execution_identity: "target process", protected_state: "/data/state.json (on target)"}
+node_partition: [client, resolver-d1, target]
+governance: {system: {client: D1, resolver-d1: D1, target: D1}}
+assessed_cut: {description: "resolver-d1 is the only route: assessed as a Cut before ablation."}
+ablation: {description: "Stop resolver-d1.", changed_relation: "Execution Pathway (resolution+route) only"}
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 0, 1, 0]
+notes: "No caching involved -- every /resolve call is answered fresh, so this differs from real DNS only in protocol, not in the freshness property the ecological validation requires."
+classification_rule:
+  pass: "baseline==[1,1,1,1], post==[1,0,1,0]"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

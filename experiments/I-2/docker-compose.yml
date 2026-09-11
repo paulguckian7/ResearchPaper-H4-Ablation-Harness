@@ -1,0 +1,38 @@
+services:
+  broker:
+    build: { context: ./broker }
+    container_name: h4-i2-broker
+    ports: [ "127.0.0.1:18400:1883" ]
+    networks: [h4net]
+
+  source-t:
+    build: { context: ./source }
+    container_name: h4-i2-source-t
+    environment: { MQTT_USER: "source-t", MQTT_PASS: "sourcet-pw", BROKER_HOST: "broker" }
+    depends_on: [broker]
+    networks: [h4net]
+
+  receiver-1:
+    build: { context: ./receiver }
+    container_name: h4-i2-receiver-1
+    environment: { BROKER_HOST: "broker" }
+    depends_on: [broker]
+    networks: [h4net]
+
+  receiver-2:
+    build: { context: ./receiver }
+    container_name: h4-i2-receiver-2
+    environment: { BROKER_HOST: "broker" }
+    depends_on: [broker]
+    networks: [h4net]
+
+  receiver-3:
+    build: { context: ./receiver }
+    container_name: h4-i2-receiver-3
+    environment: { BROKER_HOST: "broker" }
+    depends_on: [broker]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge

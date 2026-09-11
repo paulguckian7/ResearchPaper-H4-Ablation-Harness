@@ -1,0 +1,78 @@
+id: A-4
+title: "Commodity directing Authority ablation (ClamAV signature scanning and quarantine)"
+harness_version: 0.2.0
+status: >
+  UNTESTED and HIGHEST RISK of any configuration in this harness. No
+  ClamAV binaries or network access to ClamAV's mirror network were
+  available in the environment this was built in. Everything below is
+  reasoned from ClamAV's documented behaviour, not observed.
+
+eicar_handling: >
+  The EICAR test string is generated inside the scanner image at build
+  time (Dockerfile RUN, writing /scan/eicar-source.txt) rather than
+  shipped as a file in the git working tree. It never touches the host
+  filesystem. This is a functional requirement, not just tidiness: the
+  string is a standardised antivirus test signature every engine
+  (including host-side tools like Windows Defender) is designed to
+  flag, so a host-side copy will be quarantined or refuse to read the
+  moment anything -- git add, a checksum pass, even a directory listing
+  in some configurations -- touches it. run_a4.py copies
+  /scan/eicar-source.txt to /scan/eicar.txt inside the container before
+  each scan; nothing outside the container ever sees the string.
+
+operation:
+  description: >
+    The scanner detects a benign EICAR test file (the industry-standard
+    antivirus test string; it is not malware) and moves it to /quarantine.
+  q0: "eicar.txt present in /scan, absent from /quarantine"
+  q1: "eicar.txt absent from /scan, present in /quarantine"
+
+nominated_interface:
+  node: scanner
+  description: >
+    freshclam's admission of signature updates from ClamAV's official
+    mirror network -- the externally governed, directing source under
+    test. This is NOT ablated; it is the relation being classified.
+
+acting_mechanism:
+  description: "clamdscan's --move operation, which requires write access to /quarantine"
+  execution_identity: "clamav user inside the scanner container"
+  protected_state: "/quarantine directory permissions"
+
+node_partition: [scanner]
+governance:
+  system: {scanner: D1}
+  system-of-systems: {scanner: D1}
+note_on_governance: >
+  The externally governed party here is ClamAV's mirror network, not
+  represented as a separate node/container in this harness (it is real
+  infrastructure on the internet). The system-of-systems level is
+  therefore implicit in every run, not a separate compose variant.
+
+ablation:
+  description: >
+    chmod 555 /quarantine (remove write permission), leaving signature
+    fetching and the scan/detection logic completely untouched. Same
+    permission-based pattern as A-3 and A-5.
+  changed_relation: "Authority only -- specific to the quarantine-move step"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 1, 0, 0]
+
+measurement:
+  I: {baseline: "freshclam has fetched signatures (daily.cvd/daily.cld present)", post: "unchanged -- ablation does not touch signature fetching"}
+  X: {baseline: "clamdscan detects the EICAR string (scan completes, match found)", post: "detection still occurs -- exit code 1 (clamdscan's 'virus found' code), reached before the move step"}
+  A: {baseline: "quarantine directory writable; move succeeds"}
+  A_post: "quarantine directory NOT writable; move fails, clamdscan reports a move error while still reporting the detection"
+  O: {baseline: "eicar.txt ends up in /quarantine", post: "eicar.txt remains in /scan (or wherever clamdscan leaves it on a failed move), NOT in /quarantine"}
+
+known_risks:
+  - "freshclam's first signature download can take several minutes and depends on network access to ClamAV's mirror network being available and not rate-limited. wait_signatures in run_a4.py polls for up to 5 minutes; increase if needed."
+  - "clamdscan's exact exit codes and error message format for a failed --move on a read-only destination were not verified against a real clamd version. The runner checks quarantine directory contents directly (ground truth) rather than relying solely on exit codes, for this reason."
+  - "The clamav/clamav image's default entrypoint behaviour (whether clamd needs to be separately started/waited on before clamdscan can connect) was not verified. If clamdscan fails with a connection error, clamd itself may not be up yet -- check the container's own startup logs."
+  - "This is the only configuration testing a directing relation with a REAL external signature source (vs A-3's constructed agent and A-6's constructed resolver). It is the ecological-validity companion to A-3, and its failure would not invalidate A-3, but its success would meaningfully strengthen the directing-Authority claim beyond constructed cases."
+
+classification_rule:
+  pass: "baseline: eicar.txt in /quarantine after scan. post: eicar.txt NOT in /quarantine, quarantine directory confirmed non-writable, detection still occurred (clamdscan reports a match)"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "signature fetch does not complete within the wait window, or scan/quarantine state cannot be established"

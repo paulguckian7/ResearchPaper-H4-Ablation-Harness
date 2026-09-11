@@ -1,0 +1,58 @@
+id: A-6
+title: "Directing Authority via host-local egress enforcement keyed on resolver provenance (name resolution)"
+harness_version: 0.2.0
+
+operation:
+  description: "Client's connecting mechanism resolves a zone via resolver-t, then connects to the resolved address and writes test_value."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: client
+  description: "Client's admission of resolver-t's HTTP answer (the stub)"
+
+acting_mechanism:
+  description: >
+    The client's OWN connecting logic, governed by a host-local egress
+    policy (the 'designated' set) held by the client itself. This is
+    NOT the resolver's mechanism and NOT the target's -- Authority here
+    is the client's control over whether to act on what a resolver told it.
+  execution_identity: "client process"
+  protected_state: "client's in-memory designated-resolver policy"
+
+node_partition: [client, resolver-t, resolver-c, target-t, target-c]
+governance:
+  system: {client: D1, resolver-t: D2, resolver-c: D1, target-t: D1, target-c: D1}
+
+classification_note: >
+  This tests the contested case from Section 6.1 of the paper: whether
+  name resolution can be placed on the Authority row at all. The
+  candidate ablation tested here is host-local egress enforcement keyed
+  on resolver provenance -- NOT destination restriction (rejected as not
+  source-specific) and NOT response validation (rejected as acting on
+  admission). See the protocol's Section 7 candidate table.
+
+ablation:
+  description: >
+    WITHDRAW resolver-t from the client's designated set. resolver-t's
+    HTTP endpoint is untouched and fully reachable; its answer is still
+    admitted by the client. Only the client's own policy changes.
+  changed_relation: "Authority only, specific to resolver-t"
+
+control:
+  description: "resolver-c / target-c: same client, same code, resolver-c remains designated throughout."
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction_T: [1, 1, 0, 0]
+control_prediction_C: [1, 1, 1, 1]
+
+measurement:
+  I: {baseline: "client's HTTP call to resolver-t/resolve succeeds", post: "still succeeds -- resolver-t is untouched"}
+  X: {baseline: "handler_reached logged with the resolved address", post: "still logged -- the address still reaches the connecting logic"}
+  A: {baseline: "designated['resolver-t'] is True; connection attempted and succeeds", post: "designated['resolver-t'] is False; authority_denied logged; no connection attempted"}
+  O: {baseline: "target-t's test_value: 0 -> 42", post: "target-t's test_value remains 0"}
+
+classification_rule:
+  pass: "baseline==[1,1,1,1] for T; post==[1,1,0,0] for T; control==[1,1,1,1] for C throughout"
+  fail: "post shows I=0 or X=0 (would mean the ablation is not source-specific / not an Authority ablation) or A remains 1 (ablation had no effect)"
+  ambiguous: "required presence/absence evidence cannot be established"

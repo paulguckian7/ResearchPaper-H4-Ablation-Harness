@@ -1,0 +1,33 @@
+id: C-1
+title: "Cut: single route"
+harness_version: 0.2.0
+operation:
+  description: "Client K reaches sink M through router1 (the only configured route)."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface:
+  node: sink
+  description: "Sink's /fwd, reached via router1"
+acting_mechanism:
+  description: "Sink worker"
+  execution_identity: "sink process identity"
+  protected_state: "/data/state.json (on sink)"
+node_partition: [client, router1, sink]
+governance:
+  system: {client: D1, router1: D1, sink: D1}
+assessed_cut:
+  description: "router1 is assessed, before ablation, as a Cut: it is the only route from client to sink."
+ablation:
+  description: "Stop the router1 container (docker compose stop router1)."
+  changed_relation: "Execution Pathway (route availability) only"
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 0, 1, 0]
+measurement:
+  I: {baseline: "sink /fwd admits directly (bypass check)", post: "sink /fwd still admits directly (I unchanged, independent of router1)"}
+  X: {baseline: "pinned probe via router1 reaches sink", post: "pinned probe via router1 does NOT reach sink (router1 unreachable)"}
+  A: {baseline: "AUTHORITY_PROBE at sink succeeds", post: "AUTHORITY_PROBE at sink still succeeds (A unchanged, verified directly)"}
+  O: {baseline: "real op via router1 succeeds, test_value 0->42", post: "real op via router1 fails, test_value remains 0"}
+classification_rule:
+  pass: "baseline==[1,1,1,1], post==[1,0,1,0], with required evidence"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

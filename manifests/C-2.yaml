@@ -1,0 +1,30 @@
+id: C-2
+title: "Cut: two independent routes (negative control for H4b)"
+harness_version: 0.2.0
+operation:
+  description: "Client K reaches sink M via router1 OR router2 (either suffices)."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface: {node: sink, description: "Sink's /fwd, reachable via either router"}
+acting_mechanism:
+  description: "Sink worker"
+  execution_identity: "sink process identity"
+  protected_state: "/data/state.json (on sink)"
+node_partition: [client, router1, router2, sink]
+governance: {system: {client: D1, router1: D1, router2: D1, sink: D1}}
+assessed_cut:
+  description: "router1 is assessed, before ablation, as NOT a Cut: router2 independently reaches sink."
+ablation:
+  description: "Stop router1 only. router2 is untouched."
+  changed_relation: "Execution Pathway (one of two routes) only"
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [1, 1, 1, 1]
+measurement:
+  I: {baseline: "direct bypass check at sink", post: "direct bypass check at sink, unchanged"}
+  X: {baseline: "pinned probe via router1 reaches sink", post: "pinned probe via router1 fails; pinned probe via router2 still reaches sink -- X for the OPERATION is the disjunction, so X remains 1"}
+  A: {baseline: "AUTHORITY_PROBE at sink succeeds", post: "unchanged"}
+  O: {baseline: "op succeeds via router1 (tried first)", post: "op succeeds via router2 (router1 tried first, fails, falls through)"}
+classification_rule:
+  pass: "baseline==[1,1,1,1] AND post==[1,1,1,1] -- confirms router1 was correctly assessed as not a Cut"
+  fail: "post shows X=0 or O=0 -- router2 unexpectedly failed to provide an alternative route, or the Cut assessment for router1 was wrong"
+  ambiguous: "required presence/absence evidence cannot be established"

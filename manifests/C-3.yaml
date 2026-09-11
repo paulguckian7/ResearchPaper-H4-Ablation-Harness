@@ -1,0 +1,32 @@
+id: C-3
+title: "Cut at depth: shared gateway beneath two apparently independent routes"
+harness_version: 0.2.0
+operation:
+  description: "Client K reaches sink M via router1->gateway or router2->gateway."
+  q0: "test_value=0"
+  q1: "test_value=42"
+nominated_interface: {node: sink, description: "Sink's /fwd, reachable via either router, both through the shared gateway"}
+acting_mechanism:
+  description: "Sink worker"
+  execution_identity: "sink process identity"
+  protected_state: "/data/state.json (on sink)"
+node_partition: [client, router1, router2, gateway, sink]
+governance: {system: {client: D1, router1: D1, router2: D1, gateway: D1, sink: D1}}
+assessed_cut:
+  description: >
+    At this depth, gateway is a Cut (every route passes through it); neither
+    router1 nor router2 alone is a Cut. This is the case the paper's Cut
+    definition and the frame-depth limitation are about: redundancy at the
+    router1/router2 level does not remove the gateway-level Cut.
+ablations:
+  - id: "C-3a"
+    description: "Stop gateway. Both routes fail."
+    prediction: [1, 0, 1, 0]
+  - id: "C-3b"
+    description: "Separate fresh build. Stop router1 only. router2 still reaches sink via gateway."
+    prediction: [1, 1, 1, 1]
+baseline_prediction: [1, 1, 1, 1]
+classification_rule:
+  pass: "C-3a gives [1,0,1,0] AND C-3b gives [1,1,1,1], each from a fresh build"
+  fail: "either ablation contradicts its predicted signature"
+  ambiguous: "required presence/absence evidence cannot be established"

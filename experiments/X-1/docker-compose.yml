@@ -1,0 +1,30 @@
+services:
+  router:
+    build:
+      context: ./router
+    container_name: h4-x1-router
+    environment:
+      ROUTE_TABLE_CLEARABLE: "1"
+      NEXT_HOP: "http://sink:8080"
+    ports:
+      - "127.0.0.1:18110:8080"
+    networks: [h4net]
+
+  sink:
+    build:
+      context: ./sink
+    container_name: h4-x1-sink
+    ports:
+      - "127.0.0.1:18111:8080"
+    networks: [h4net]
+
+  source:
+    build:
+      context: ./source
+    container_name: h4-x1-source
+    depends_on: [router, sink]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge

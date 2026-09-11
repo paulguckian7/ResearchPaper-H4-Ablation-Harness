@@ -1,0 +1,27 @@
+services:
+  rp:
+    build: { context: ./rp }
+    container_name: h4-a1-rp
+    ports: [ "127.0.0.1:18180:8080" ]
+    volumes: [a1data:/data]
+    networks: [h4net]
+
+  issuer-t:
+    build: { context: ./issuer-t }
+    container_name: h4-a1-issuer-t
+    environment: { ISS_NAME: "issuer-t", RP_URL: "http://rp:8080" }
+    depends_on: [rp]
+    networks: [h4net]
+
+  issuer-c:
+    build: { context: ./issuer-c }
+    container_name: h4-a1-issuer-c
+    environment: { ISS_NAME: "issuer-c", RP_URL: "http://rp:8080" }
+    depends_on: [rp]
+    networks: [h4net]
+
+networks:
+  h4net:
+    driver: bridge
+volumes:
+  a1data:
