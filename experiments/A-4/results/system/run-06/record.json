@@ -1,0 +1,39 @@
+{
+  "test": "A-4",
+  "harness_version": "0.2.0",
+  "run": 6,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T18:47:21.840531+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_observed": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "A-4.yaml": "9dae0f433a93d6e8360f44b85dc20da526ce339c580557e18c3226bceb177d6d",
+    "docker-compose.yml": "90345c7209f2eebd9d0ba0bb43e7e7253448ccbde3810bb82f36ec5b4a666a1e",
+    "Dockerfile": "561b66772820e45770978fcde9d71a79f193110461cb16e7e99882a72a6b6794"
+  },
+  "scan1_exit": 1,
+  "scan2_exit": 2
+}

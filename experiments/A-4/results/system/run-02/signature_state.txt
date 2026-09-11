@@ -1,0 +1,1 @@
+-rw-r--r--    1 clamav   clamav    23431223 Sep  7 01:52 /var/lib/clamav/daily.cvd

@@ -1,0 +1,14 @@
+plain scan: exit=1
+/scan/eicar.txt: Eicar-Test-Signature FOUND
+
+----------- SCAN SUMMARY -----------
+Infected files: 1
+Time: 0.005 sec (0 m 0 s)
+Start Date: 2026:09:11 18:47:19
+End Date:   2026:09:11 18:47:19
+
+
+---
+move scan: exit=2
+action_setup: Failed to create quarantine lock file in /quarantine: Permission denied
+

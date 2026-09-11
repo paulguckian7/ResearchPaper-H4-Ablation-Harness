@@ -1,4 +1,16 @@
-FROM clamav/clamav:1.3
+# clamav/clamav:1.3 does not exist -- an earlier version of this
+# Dockerfile guessed at a version number with no way to check it against
+# a real registry (this environment has no Docker/network access), and
+# "docker compose up" failed outright with "not found" the first time
+# this was actually run. Confirmed against the official docs
+# (docs.clamav.net/manual/Installing/Docker.html): valid tags are
+# clamav/clamav:<MAJOR.MINOR[.PATCH]>[_base], :stable[_base],
+# :unstable[_base], :latest[_base]. "stable" is used here because it
+# comes preloaded with signature databases (the non-_base form), which
+# suits a one-shot test container better than the _base variant, which
+# needs a persistent volume and downloads the full set from scratch
+# every time.
+FROM clamav/clamav:stable
 # Base image runs freshclam (signature updates from ClamAV's official
 # mirror network -- the externally governed source under test) and clamd
 # on startup via its own entrypoint. /scan and /quarantine are created

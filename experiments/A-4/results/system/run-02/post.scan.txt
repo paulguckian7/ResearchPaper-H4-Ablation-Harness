@@ -1,0 +1,10 @@
+exit=2
+
+----------- SCAN SUMMARY -----------
+Infected files: 0
+Total errors: 1
+Time: 0.000 sec (0 m 0 s)
+Start Date: 2026:09:11 18:30:08
+End Date:   2026:09:11 18:30:08
+
+ERROR: Could not connect to clamd on LocalSocket /tmp/clamd.sock: No such file or directory

@@ -1,0 +1,3 @@
+exit=2
+action_setup: Failed to create quarantine lock file in /quarantine: Permission denied
+

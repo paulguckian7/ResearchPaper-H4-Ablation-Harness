@@ -1,0 +1,27 @@
+name: a-4
+services:
+  scanner:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-4\scanner
+      dockerfile: Dockerfile
+    container_name: h4-a4-scanner
+    networks:
+      h4net: null
+    volumes:
+    - type: volume
+      source: a4scan
+      target: /scan
+      volume: {}
+    - type: volume
+      source: a4quarantine
+      target: /quarantine
+      volume: {}
+networks:
+  h4net:
+    name: a-4_h4net
+    driver: bridge
+volumes:
+  a4quarantine:
+    name: a-4_a4quarantine
+  a4scan:
+    name: a-4_a4scan

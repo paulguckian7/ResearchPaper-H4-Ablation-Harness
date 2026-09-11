@@ -1,0 +1,10 @@
+exit=1
+/scan/eicar.txt: Eicar-Test-Signature FOUND
+/scan/eicar.txt: moved to '/quarantine/eicar.txt'
+
+----------- SCAN SUMMARY -----------
+Infected files: 1
+Time: 0.006 sec (0 m 0 s)
+Start Date: 2026:09:11 18:41:18
+End Date:   2026:09:11 18:41:18
+
