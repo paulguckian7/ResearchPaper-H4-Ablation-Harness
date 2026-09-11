@@ -7,7 +7,8 @@ authors:
   - family-names: "Guckian"
     given-names: "Paul"
 license: MIT
-repository-code: "TO-BE-ADDED"
+doi: 10.5281/zenodo.22711458
+repository-code: "https://github.com/paulguckian7/ResearchPaper-H4-Ablation-Harness"
 abstract: "Reproducible Docker/Python harness for controlled ablation tests of Interface, Execution Pathway and Authority correspondence."
 keywords:
   - cybersecurity
