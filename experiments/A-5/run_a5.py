@@ -48,9 +48,19 @@ def wait_up():
 def check(source_name, events, access, result, marker, auth, expect_written):
     I = any(e["event"] == "interface_admit" and e.get("source") == source_name for e in events)
     X = any(e["event"] == "handler_reached" and e.get("source") == source_name for e in events)
-    A = (access.get("state_writable_by_process") is True and auth.get("authority_probe") == "ok") \
-        if expect_written else \
-        (access.get("state_writable_by_process") is False and auth.get("authority_probe") == "denied")
+    if expect_written:
+        # Presence evidence: writable and the probe succeeds. This
+        # direction is a direct "A present" boolean, no inversion needed.
+        A = access.get("state_writable_by_process") is True and auth.get("authority_probe") == "ok"
+    else:
+        # Absence evidence (protocol A5): both legs -- state withheld, and
+        # the enforcing mechanism's own denial record -- must line up.
+        # Bug fixed here (same as A-3): this boolean is True when absence
+        # is CONFIRMED, so it must be negated before use as "A present".
+        # The earlier version used it directly, reporting A=1 on a
+        # correctly confirmed denial.
+        A_absent_confirmed = access.get("state_writable_by_process") is False and auth.get("authority_probe") == "denied"
+        A = not A_absent_confirmed
     O = result["body"].get("written") == 42
     return [int(I), int(X), int(A), int(O)]
 

@@ -107,8 +107,15 @@ def one_run(n, level):
     I2 = any(e["event"] == "interface_admit" for e in events_t2)
     X2 = any(e["event"] == "handler_reached" and e.get("marker") is True for e in events_t2)
     # Absence evidence (protocol A5): access-control state withholds the
-    # control, and the enforcing mechanism (AUTHORITY_PROBE) records a denial.
-    A2 = access_t2.get("state_writable_by_process") is False and auth_t2.get("authority_probe") == "denied"
+    # control, and the enforcing mechanism (AUTHORITY_PROBE) records a
+    # denial. A_absent_confirmed is True exactly when both legs of that
+    # evidence line up -- i.e. when Authority is correctly shown ABSENT.
+    # Bug fixed here: an earlier version used this boolean directly as the
+    # reported "A" value (int(A_absent_confirmed)), which reports A=1
+    # ("present") on a correctly confirmed denial -- backwards. A must be
+    # the negation: 0 when absence is confirmed, 1 otherwise.
+    A_absent_confirmed = access_t2.get("state_writable_by_process") is False and auth_t2.get("authority_probe") == "denied"
+    A2 = not A_absent_confirmed
     # O absent: the operation's specified transition (test_value -> 42) did
     # not occur.
     O2_occurred = result_t2["body"].get("written") == 42
