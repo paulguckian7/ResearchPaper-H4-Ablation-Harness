@@ -7,7 +7,7 @@ RESULTS = ROOT / "results"
 RECEIVERS = ["receiver-1", "receiver-2", "receiver-3"]
 
 def sh(*args, check=True):
-    p = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
+    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
     if check and p.returncode != 0:
         raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
     return p
@@ -63,7 +63,19 @@ def one_run(n, level):
     (run_dir / "baseline.publish.json").write_text(json.dumps(pub_result, indent=2))
     (run_dir / "baseline.receivers.json").write_text(json.dumps(recv_results, indent=2))
 
-    I_base = int(pub_result.get("puback_reason") in ("0", "ok", None))
+    # MQTTv5 reason codes: the whole 0x00-0x7F range (0-127) is Success,
+    # not just literal 0 -- e.g. 16 ("No matching subscribers") is a
+    # normal, non-failure code that fires whenever nothing happens to be
+    # subscribed at the exact moment of publish, which is expected here
+    # since receivers subscribe AFTER the publish and rely on the
+    # retained flag to pick the message up regardless of this code.
+    # 0x80+ (128+) is the failure range -- e.g. 135 "Not authorized" for
+    # an ACL denial. An earlier version checked "== 0" only, which
+    # misread a normal 16 as a failure. Confirmed against a real broker
+    # run: baseline reason 16 with O=1 (receivers got it via retain) and
+    # post-ablation reason 135 with O=0 (correctly denied).
+    prv = pub_result.get("puback_reason_value")
+    I_base = int(prv is not None and prv < 128)
     O_base = int(all(r.get("got_message") for r in recv_results.values()))
     baseline = [I_base, 1, 1, O_base]  # X, A not meaningfully separable for this row; see manifest
 
@@ -83,7 +95,8 @@ def one_run(n, level):
     (run_dir / "post.publish.json").write_text(json.dumps(pub_result2, indent=2))
     (run_dir / "post.receivers.json").write_text(json.dumps(recv_results2, indent=2))
 
-    I_post = int(pub_result2.get("puback_reason") not in ("0", "ok", None))  # denial code, not success
+    prv2 = pub_result2.get("puback_reason_value")
+    I_post = int(prv2 is not None and prv2 >= 128)  # failure range per MQTTv5, not just nonzero
     O_post = int(not any(r.get("got_message") for r in recv_results2.values()))
     post = [1 - I_post, 1, 1, 1 - O_post]  # encode as protocol convention: I absent -> 0, O absent -> 0
     # (I_post/O_post above are "was it denied" flags; invert for [I,X,A,O] reporting)
@@ -96,6 +109,7 @@ def one_run(n, level):
         "post_prediction": [0,1,1,0], "post_observed": post,
         "outcome": outcome, "source_sha256": src_hashes,
         "raw_publish_baseline": pub_result, "raw_publish_post": pub_result2,
+        "note": "puback_reason_value/str in raw_publish_* are the actual reason code paho-mqtt reported -- check these directly if I still looks wrong; this is the field this harness has never had confirmed against a real broker before now.",
     }
     (run_dir / "record.json").write_text(json.dumps(record, indent=2))
     print(f"I-2 {level} run {n}: baseline={tuple(baseline)} post={tuple(post)} => {outcome}")
@@ -106,7 +120,7 @@ def dry_run():
     print("Dry run only: I-2 WILL NOT BE EXECUTED.\n")
     print("THIS HARNESS HAS NOT BEEN FUNCTIONALLY TESTED (no local mosquitto/paho-mqtt available during development).")
     for cmd in [("docker","--version"),("docker","compose","version"),(sys.executable,"--version")]:
-        p = subprocess.run(cmd, text=True, capture_output=True); print((p.stdout or p.stderr).strip())
+        p = subprocess.run(cmd, encoding="utf-8", errors="replace", capture_output=True); print((p.stdout or p.stderr).strip())
     sh("docker","compose","config")
     print("\nDocker Compose configuration validates successfully.")
     print("Harness is ready, but see manifest 'known_risks' before treating results as confirmatory.")

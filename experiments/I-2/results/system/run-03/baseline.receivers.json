@@ -1,0 +1,14 @@
+{
+  "receiver-1": {
+    "got_message": true,
+    "payload": "{\"test_value\": 42}"
+  },
+  "receiver-2": {
+    "got_message": true,
+    "payload": "{\"test_value\": 42}"
+  },
+  "receiver-3": {
+    "got_message": true,
+    "payload": "{\"test_value\": 42}"
+  }
+}

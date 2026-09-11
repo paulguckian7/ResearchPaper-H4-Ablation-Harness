@@ -1,7 +1,12 @@
 id: X-2
 title: "Commodity reverse-proxy Channel ablation (nginx)"
 harness_version: 0.2.0
-status: "UNTESTED -- nginx was not available to verify locally."
+status: >
+  CONFIRMED on one real run (run-02, after fixing a readiness race:
+  wait_up() checked only the sink's health, never nginx's own, so the
+  baseline check could fire before nginx was listening at all). Not yet
+  run to a full five-run batch. Treat as provisionally verified rather
+  than fully confirmatory until it has.
 
 operation:
   description: "Source posts through nginx's /fwd location mapping to the sink."

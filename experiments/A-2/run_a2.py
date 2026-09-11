@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 
 def sh(*args, check=True):
-    p = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
+    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
     if check and p.returncode != 0:
         raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
     return p
@@ -93,7 +93,7 @@ def one_run(n, level):
 def dry_run():
     print("Dry run only: A-2 WILL NOT BE EXECUTED.\n")
     for cmd in [("docker", "--version"), ("docker", "compose", "version"), (sys.executable, "--version")]:
-        p = subprocess.run(cmd, text=True, capture_output=True)
+        p = subprocess.run(cmd, encoding="utf-8", errors="replace", capture_output=True)
         print((p.stdout or p.stderr).strip())
     sh("docker", "compose", "config")
     print("\nDocker Compose configuration validates successfully.")

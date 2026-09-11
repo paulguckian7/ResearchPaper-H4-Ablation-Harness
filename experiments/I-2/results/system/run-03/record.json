@@ -1,0 +1,54 @@
+{
+  "test": "I-2",
+  "harness_version": "0.2.0",
+  "run": 3,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T18:19:32.227483+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "post_observed": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "I-2.yaml": "df87ab9bab3d4e849aa76a16d39b5492511dbd362e5e542d838abff500f9bf6d",
+    "docker-compose.yml": "0ed6f473749b60c5d931ca27c5aba2b5ec2356bd911f449b9004950c15bc32f3",
+    "mosquitto.conf": "e8483df1966df80f4032e3f7cbddb722c7d5869f5d8245d13e0f83504615e266",
+    "acl.baseline.conf": "6c5888960530582d952d2588dc1c6dfc7ccab4da65c66270457b4813b53c1f37",
+    "acl.ablated.conf": "276f3cc31f4a9b1d7266c61ee02f4f14f85263ea3b6943ecca392066fe61b9f0",
+    "publish.py": "8e8337a4b5f4fbf4afa34c4902ad381b10d441f6c227113744333db997d82c7e",
+    "subscribe_and_record.py": "39048d26c9a69cc2579d3a87257986f86fc9a8325c682efe5f23c457ffe04405"
+  },
+  "raw_publish_baseline": {
+    "connected": true,
+    "publish_rc": 0,
+    "puback_reason_value": 16,
+    "puback_reason_str": "No matching subscribers"
+  },
+  "raw_publish_post": {
+    "connected": true,
+    "publish_rc": 0,
+    "puback_reason_value": 135,
+    "puback_reason_str": "Not authorized"
+  },
+  "note": "puback_reason_value/str in raw_publish_* are the actual reason code paho-mqtt reported -- check these directly if I still looks wrong; this is the field this harness has never had confirmed against a real broker before now."
+}

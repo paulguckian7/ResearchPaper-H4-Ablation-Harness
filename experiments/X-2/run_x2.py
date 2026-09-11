@@ -2,12 +2,13 @@ import json, subprocess, sys, time, hashlib
 from pathlib import Path
 from datetime import datetime, timezone
 import urllib.request
+import urllib.error
 
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 
 def sh(*args, check=True):
-    p = subprocess.run(args, cwd=ROOT, text=True, capture_output=True)
+    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
     if check and p.returncode != 0:
         raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
     return p
@@ -36,14 +37,38 @@ SOURCE_FILES = [
     ROOT / "sink" / "sink.py", ROOT / "source" / "send.py",
 ]
 
+def proxy_is_up():
+    """nginx has no JSON /health endpoint like the Python components do.
+    Any HTTP response at all -- even a 404 -- proves it's listening and
+    accepting connections; only a connection-level failure (refused,
+    reset, no response) means it isn't up yet."""
+    try:
+        req = urllib.request.Request("http://127.0.0.1:18410/", method="GET")
+        urllib.request.urlopen(req, timeout=2)
+        return True
+    except urllib.error.HTTPError:
+        return True  # got a real HTTP response (e.g. 404) -- nginx is up
+    except Exception:
+        return False
+
 def wait_up():
+    # Bug fixed here: this previously checked only the sink's readiness,
+    # never nginx's. Confirmed by a real run where baseline failed with
+    # ConnectionRefusedError (nginx not listening yet) while post-ablation
+    # -- which runs after several more seconds of setup -- correctly
+    # returned a 404 with nginx's own server header. The ablation
+    # mechanism itself was working the whole time; only the race in this
+    # function was wrong.
     deadline = time.time() + 60
     while time.time() < deadline:
         try:
-            if get("http://127.0.0.1:18411/health").get("ok"): return
+            sink_ok = get("http://127.0.0.1:18411/health").get("ok")
         except Exception:
-            time.sleep(0.5)
-    raise RuntimeError("sink did not become ready")
+            sink_ok = False
+        if sink_ok and proxy_is_up():
+            return
+        time.sleep(0.5)
+    raise RuntimeError("sink and/or proxy did not become ready")
 
 def one_run(n, level):
     run_dir = RESULTS / level / f"run-{n:02d}"
@@ -109,7 +134,7 @@ def dry_run():
     print("Dry run only: X-2 WILL NOT BE EXECUTED.\n")
     print("THIS HARNESS HAS NOT BEEN FUNCTIONALLY TESTED (no local nginx available during development).")
     for cmd in [("docker","--version"),("docker","compose","version"),(sys.executable,"--version")]:
-        p = subprocess.run(cmd, text=True, capture_output=True); print((p.stdout or p.stderr).strip())
+        p = subprocess.run(cmd, encoding="utf-8", errors="replace", capture_output=True); print((p.stdout or p.stderr).strip())
     sh("docker","compose","config")
     print("\nDocker Compose configuration validates successfully.")
     print("Harness is ready, but see manifest 'known_risks' before treating results as confirmatory.")

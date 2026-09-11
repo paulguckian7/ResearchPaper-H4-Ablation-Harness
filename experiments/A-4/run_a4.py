@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 
 def sh(*args, check=True, timeout=600):
-    p = subprocess.run(args, cwd=ROOT, text=True, capture_output=True, timeout=timeout)
+    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True, timeout=timeout)
     if check and p.returncode != 0:
         raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
     return p
@@ -109,7 +109,7 @@ def dry_run():
     print("No ClamAV binaries or mirror-network access were available to test this during development.")
     print("Recommend reading manifests/A-4.yaml 'known_risks' in full before running.\n")
     for cmd in [("docker","--version"),("docker","compose","version")]:
-        p = subprocess.run(cmd, text=True, capture_output=True); print((p.stdout or p.stderr).strip())
+        p = subprocess.run(cmd, encoding="utf-8", errors="replace", capture_output=True); print((p.stdout or p.stderr).strip())
     sh("docker","compose","config")
     print("\nDocker Compose configuration validates successfully.")
     print("Harness is ready. First run will take several minutes (signature download).")
