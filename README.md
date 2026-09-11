@@ -12,9 +12,8 @@ The harness is intended to test whether relational classes mapped to **Interface
 **Current executable experiment:** I-1 (constructed HTTP Interface ablation)  
 **Platform:** Docker Compose + Python 3.10+  
 **Licence:** MIT
-**doi:** 10.5281/zenodo.22711458
 
-The repository deliberately separates:
+The repository (doi: 10.5281/zenodo.22711458) deliberately separates:
 
 - `pilot-results/` — calibration runs that are not treated as final H4 evidence;
 - `results/` — outputs from the corrected harness;
