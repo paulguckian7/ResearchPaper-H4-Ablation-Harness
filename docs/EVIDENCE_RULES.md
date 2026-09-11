@@ -8,10 +8,12 @@ These rules are implemented for I-1 and are intended to mirror the companion pre
 Evidence that the tested source was admitted at the nominated Interface.
 
 ### Execution Pathway present
-A benign marker is injected immediately downstream of the nominated Interface and is observed by the same acting handler used by admitted work.
+A benign marker enters the post-admission path of the nominated Interface, the same code path admitted work follows after the admission decision, and is observed at entry to the same acting handler.
 
 ### Authority present
-The same receiver process, under the same execution identity, successfully performs a benign write to the protected state.
+Both:
+1. access-control state for the acting mechanism, read under its own execution identity, grants write control over the protected state; and
+2. the same receiver process, under the same execution identity, successfully performs a benign write to the protected state.
 
 ## Absence
 

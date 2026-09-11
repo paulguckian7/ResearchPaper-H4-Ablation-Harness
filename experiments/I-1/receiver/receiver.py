@@ -61,7 +61,19 @@ def worker():
             if kind == "operation":
                 log("handler_reached",
                     client_ip=item["client_ip"],
-                    value=item["value"])
+                    value=item["value"],
+                    marker=item.get("marker", False))
+                if item.get("marker"):
+                    # X marker: has traversed every step after the admission
+                    # decision (payload parsing, submission, queue, worker
+                    # dispatch, handler entry) and branches off here, before
+                    # the state write, so that it does not change O.
+                    log("x_marker_reached_handler")
+                    st = load_json(STATE, {})
+                    st["marker_seen"] = True
+                    save_json(STATE, st)
+                    item["result"]["marker_seen"] = True
+                    continue
                 st = load_json(STATE, {})
                 st["test_value"] = item["value"]
                 save_json(STATE, st)
@@ -70,14 +82,6 @@ def worker():
                     value=item["value"])
                 item["result"]["written"] = item["value"]
 
-            elif kind == "x_marker":
-                # This enters the exact same internal queue used by admitted work,
-                # immediately downstream of the nominated HTTP admission decision.
-                log("x_marker_reached_handler")
-                st = load_json(STATE, {})
-                st["marker_seen"] = True
-                save_json(STATE, st)
-                item["result"]["marker_seen"] = True
 
             elif kind == "authority_probe":
                 # Same receiver process and execution identity writes the same
@@ -100,6 +104,46 @@ def submit(item, timeout=5):
     if not item["done"].wait(timeout):
         raise TimeoutError("worker did not complete item")
     return item["result"]
+
+def process_admitted(raw, client_ip, marker=False):
+    """Post-admission path of the nominated Interface.
+
+    Everything after the admission decision at /push runs here, for admitted
+    work and for the X marker alike: payload parsing, submission to the
+    queue, and handling by the worker. Returns (http_status, body).
+    """
+    try:
+        payload = json.loads(raw.decode("utf-8") or "{}")
+        value = int(payload["test_value"])
+    except Exception:
+        return 400, {"error": "bad payload"}
+
+    result = submit({
+        "kind": "operation",
+        "client_ip": client_ip,
+        "value": value,
+        "marker": marker
+    })
+
+    if "error" in result:
+        return 500, result
+    return 200, result
+
+def access_state():
+    """Access-control state for the acting mechanism, read inside the
+    receiver process under its own execution identity."""
+    stt = os.stat(STATE)
+    return {
+        "process_uid": os.getuid(),
+        "process_gid": os.getgid(),
+        "state_path": STATE,
+        "state_owner_uid": stt.st_uid,
+        "state_owner_gid": stt.st_gid,
+        "state_mode": oct(stt.st_mode & 0o777),
+        "data_dir_mode": oct(os.stat(DATA).st_mode & 0o777),
+        "state_writable_by_process": os.access(STATE, os.W_OK),
+        "data_dir_writable_by_process": os.access(DATA, os.W_OK)
+    }
 
 def internal_server():
     try:
@@ -127,7 +171,14 @@ def internal_server():
 
             try:
                 if cmd == "X_MARKER":
-                    result = submit({"kind": "x_marker"})
+                    code, body = process_admitted(
+                        json.dumps({"test_value": 0}).encode("utf-8"),
+                        client_ip="internal-x-marker",
+                        marker=True
+                    )
+                    result = {"status": code, **body}
+                elif cmd == "ACCESS_STATE":
+                    result = access_state()
                 elif cmd == "AUTHORITY_PROBE":
                     result = submit({"kind": "authority_probe"})
                 elif cmd.startswith("SET_DENY_IP "):
@@ -207,21 +258,9 @@ class Handler(BaseHTTPRequestHandler):
 
         log("interface_admit", client_ip=client_ip)
 
-        try:
-            payload = json.loads(raw.decode("utf-8") or "{}")
-            value = int(payload["test_value"])
-        except Exception:
-            self._json(400, {"error": "bad payload"})
-            return
-
-        result = submit({
-            "kind": "operation",
-            "client_ip": client_ip,
-            "value": value
-        })
-
-        if "error" in result:
-            self._json(500, result)
+        code, result = process_admitted(raw, client_ip)
+        if code != 200:
+            self._json(code, result)
             return
 
         self._json(200, {

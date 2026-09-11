@@ -8,7 +8,7 @@ The harness is intended to test whether relational classes mapped to **Interface
 
 ## Status
 
-**Harness version:** 0.1.0  
+**Harness version:** 0.1.1  
 **Current executable experiment:** I-1 (constructed HTTP Interface ablation)  
 **Platform:** Docker Compose + Python 3.10+  
 **Licence:** MIT
@@ -67,8 +67,8 @@ Expected post-ablation signature:
 The conditions are then measured independently:
 
 - **I absent:** the source-specific denial policy is present and the nominated Interface logs rejection of S.
-- **X present:** a benign marker is injected through an internal Unix socket **immediately downstream of the nominated Interface**, into the same internal queue and same handler used by admitted work.
-- **A present:** the same receiver process performs a benign write to the same protected state under its existing execution identity.
+- **X present:** a benign marker is injected through an internal Unix socket into the **post-admission path of the nominated Interface**: the same `process_admitted()` function that `/push` calls after admission. It traverses payload parsing, the queue and worker dispatch, and is observed at handler entry by the same worker, before any state write.
+- **A present:** access-control state read inside the receiver process shows the state file and data directory writable under its execution identity, and the same process performs a benign write to the same protected state file.
 - **O absent:** S does not cause the specified state transition.
 
 The X and A probes are instrumentation channels, not nominated Interfaces for the operation.
@@ -131,6 +131,7 @@ Each run stores:
 - `baseline.state.json`
 - `post.events.json`
 - `post.state.json`
+- `post.access_state.json`
 - `docker.images.txt`
 - `git-head.txt` where available
 - `checksums.sha256`

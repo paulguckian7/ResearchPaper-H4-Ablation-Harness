@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import shutil
 import subprocess
@@ -15,6 +16,18 @@ EXP = ROOT / "experiments" / "I-1"
 MANIFEST = ROOT / "manifests" / "I-1.yaml"
 RESULT_ROOT = EXP / "results"
 BASE = "http://127.0.0.1:18080"
+HARNESS_VERSION = "0.1.1"
+
+SOURCE_FILES = [
+    MANIFEST,
+    ROOT / "run_i1.py",
+    EXP / "docker-compose.yml",
+    EXP / "receiver" / "Dockerfile",
+    EXP / "receiver" / "receiver.py",
+    EXP / "receiver" / "internal_probe.py",
+    EXP / "source" / "Dockerfile",
+    EXP / "source" / "send.py",
+]
 
 def sh(*args, cwd=None, check=True):
     p = subprocess.run(
@@ -104,7 +117,8 @@ def snapshot_environment(run_dir):
         encoding="utf-8"
     )
 
-    versions = []
+    versions = [f"Host platform: {platform.platform()}",
+                f"Runner interpreter: {sys.executable}"]
     for cmd in [
         ("docker", "--version"),
         ("docker", "compose", "version"),
@@ -157,10 +171,17 @@ def post_measure(ip):
     # Attempt the actual operation from S.
     src = send_source()
 
-    # Independent X check: inject immediately downstream of nominated Interface.
+    # Independent X check: the marker enters the post-admission path of the
+    # nominated Interface (the same function /push calls after admission) and
+    # is observed at handler entry by the same worker.
     x_result = internal_probe("X_MARKER")
 
-    # Independent A check: same receiver process/identity writes same state.
+    # Independent A check, leg 1: access-control state for the acting
+    # mechanism, read inside the receiver process under its own identity.
+    access = internal_probe("ACCESS_STATE")
+
+    # Independent A check, leg 2: same receiver process/identity writes the
+    # same protected state file.
     a_result = internal_probe("AUTHORITY_PROBE")
 
     st = state()
@@ -176,13 +197,24 @@ def post_measure(ip):
 
     x_seen = (
         st["state"].get("marker_seen") is True
+        and any(
+            e.get("event") == "handler_reached" and e.get("marker") is True
+            for e in ev
+        )
         and any(e.get("event") == "x_marker_reached_handler" for e in ev)
+        and x_result.get("status") == 200
         and x_result.get("marker_seen") is True
     )
     X = int(x_seen)
 
+    access_grants = (
+        access.get("state_writable_by_process") is True
+        and access.get("data_dir_writable_by_process") is True
+    )
+
     a_seen = (
-        st["state"].get("authority_probe") == "ok"
+        access_grants
+        and st["state"].get("authority_probe") == "ok"
         and any(e.get("event") == "authority_probe_write" for e in ev)
         and a_result.get("authority_probe") == "ok"
     )
@@ -204,6 +236,7 @@ def post_measure(ip):
         "source_result": src,
         "x_probe_result": x_result,
         "authority_probe_result": a_result,
+        "access_state": access,
         "state": st,
         "events": ev
     }
@@ -239,6 +272,7 @@ def one_run(run_number, level):
     post, post_evidence_ok, post_evidence = post_measure(ip)
     write_json(run_dir / "post.events.json", post_evidence["events"])
     write_json(run_dir / "post.state.json", post_evidence["state"])
+    write_json(run_dir / "post.access_state.json", post_evidence["access_state"])
 
     outcome = classify(
         baseline,
@@ -253,7 +287,11 @@ def one_run(run_number, level):
 
     record = {
         "test": "I-1",
-        "harness_version": "0.1.0",
+        "harness_version": HARNESS_VERSION,
+        "source_sha256": {
+            str(pth.relative_to(ROOT).as_posix()): sha256_file(pth)
+            for pth in SOURCE_FILES
+        },
         "run": run_number,
         "level": level,
         "governance_assignment": governance,
@@ -273,7 +311,8 @@ def one_run(run_number, level):
             "policy_result": post_evidence["policy_result"],
             "source_result": post_evidence["source_result"],
             "x_probe_result": post_evidence["x_probe_result"],
-            "authority_probe_result": post_evidence["authority_probe_result"]
+            "authority_probe_result": post_evidence["authority_probe_result"],
+            "access_state": post_evidence["access_state"]
         }
     }
 
