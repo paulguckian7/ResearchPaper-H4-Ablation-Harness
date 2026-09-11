@@ -1,0 +1,57 @@
+id: I-1
+title: Constructed HTTP Interface ablation
+harness_version: 0.1.0
+
+operation:
+  description: "Source S causes receiver R to change test_value from 0 to 42."
+  q0: "test_value=0"
+  q1: "test_value=42"
+
+nominated_interface:
+  node: R
+  description: "Receiver HTTP listener /push"
+
+acting_mechanism:
+  description: "Receiver worker handling an admitted work item"
+  execution_identity: "receiver process identity"
+  protected_state: "/data/state.json"
+
+node_partition:
+  - S
+  - R
+
+governance:
+  system:
+    S: D1
+    R: D1
+  system-of-systems:
+    S: D2
+    R: D1
+
+ablation:
+  description: "Change the existing admission policy at /push to deny Source S by its current container IP."
+  changed_relation: "Interface admission relation only"
+
+baseline_prediction: [1, 1, 1, 1]
+post_ablation_prediction: [0, 1, 1, 0]
+
+observation_window_seconds: 2
+
+measurement:
+  I:
+    baseline: "interface_admit event for Source S at /push"
+    post: "deny policy contains Source S IP and interface_reject event for the same IP"
+  X:
+    baseline: "handler_reached event for admitted operation"
+    post: "X_MARKER injected through internal Unix socket downstream of /push admission, queued to same worker, x_marker_reached_handler event observed"
+  A:
+    baseline: "state_write event by receiver worker"
+    post: "AUTHORITY_PROBE through internal Unix socket causes authority_probe_write event and state change by same receiver process"
+  O:
+    baseline: "state transition 0 -> 42 caused by S"
+    post: "test_value remains 0 after S attempt"
+
+classification_rule:
+  pass: "baseline == [1,1,1,1] and post == [0,1,1,0], with required evidence"
+  fail: "measured evidence contradicts a predicted value"
+  ambiguous: "required presence/absence evidence cannot be established"

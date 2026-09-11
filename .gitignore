@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+experiments/I-1/results/*
+!experiments/I-1/results/.gitkeep

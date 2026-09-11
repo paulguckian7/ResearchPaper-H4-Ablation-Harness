@@ -1,0 +1,117 @@
+{
+  "test": "I-1",
+  "run": 2,
+  "timestamp_utc": "2026-09-11T14:30:12.269794+00:00",
+  "source_ip": "172.20.0.3",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "post_observed": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "baseline_evidence": {
+    "source_result": {
+      "status": 200,
+      "body": {
+        "admitted": true,
+        "written": 42,
+        "client_ip": "172.20.0.3"
+      }
+    },
+    "state": {
+      "state": {
+        "test_value": 42,
+        "marker_seen": false,
+        "authority_probe": null
+      },
+      "policy": {
+        "deny_ip": null
+      }
+    },
+    "events": [
+      {
+        "ts": 1789137010.9880056,
+        "event": "reset"
+      },
+      {
+        "ts": 1789137011.65084,
+        "event": "interface_admit",
+        "client_ip": "172.20.0.3"
+      },
+      {
+        "ts": 1789137011.6510417,
+        "event": "handler_reached",
+        "client_ip": "172.20.0.3",
+        "value": 42
+      },
+      {
+        "ts": 1789137011.651407,
+        "event": "state_write",
+        "client_ip": "172.20.0.3",
+        "value": 42
+      }
+    ]
+  },
+  "post_evidence": {
+    "source_result": {
+      "status": 403,
+      "body": {
+        "admitted": false,
+        "client_ip": "172.20.0.3"
+      }
+    },
+    "state": {
+      "state": {
+        "test_value": 0,
+        "marker_seen": true,
+        "authority_probe": "ok"
+      },
+      "policy": {
+        "deny_ip": "172.20.0.3"
+      }
+    },
+    "events": [
+      {
+        "ts": 1789137011.7388113,
+        "event": "reset"
+      },
+      {
+        "ts": 1789137011.7426505,
+        "event": "policy_changed",
+        "deny_ip": "172.20.0.3"
+      },
+      {
+        "ts": 1789137012.1761959,
+        "event": "interface_reject",
+        "client_ip": "172.20.0.3"
+      },
+      {
+        "ts": 1789137012.246364,
+        "event": "x_marker_reached_handler"
+      },
+      {
+        "ts": 1789137012.261667,
+        "event": "authority_probe_write"
+      }
+    ]
+  }
+}

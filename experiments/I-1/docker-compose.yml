@@ -1,0 +1,28 @@
+services:
+  receiver:
+    build:
+      context: ./receiver
+    container_name: h4-i1-receiver
+    ports:
+      - "127.0.0.1:18080:8080"
+    volumes:
+      - i1data:/data
+    networks:
+      - h4net
+
+  source:
+    build:
+      context: ./source
+    container_name: h4-i1-source
+    command: ["python", "-c", "import time; time.sleep(10**9)"]
+    depends_on:
+      - receiver
+    networks:
+      - h4net
+
+networks:
+  h4net:
+    driver: bridge
+
+volumes:
+  i1data:

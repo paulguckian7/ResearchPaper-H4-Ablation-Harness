@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this test harness, please cite the associated paper and this software release."
+title: "H4 Ablation Harness"
+version: "0.1.0"
+date-released: 2026-09-11
+authors:
+  - family-names: "Guckian"
+    given-names: "Paul"
+license: MIT
+repository-code: "TO-BE-ADDED"
+abstract: "Reproducible Docker/Python harness for controlled ablation tests of Interface, Execution Pathway and Authority correspondence."
+keywords:
+  - cybersecurity
+  - ablation
+  - reproducibility
+  - interface
+  - execution pathway
+  - authority
