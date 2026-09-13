@@ -105,7 +105,7 @@ def one_run(n, level):
         raise RuntimeError(f"{run_dir} exists; results are append-only")
     run_dir.mkdir(parents=True)
 
-    sh("docker", "compose", "down", "-v", check=False)
+    sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     sh("docker", "compose", "up", "-d", "--build")
     wait_up()
 
@@ -212,7 +212,7 @@ def main():
             if existing: start = max(existing) + 1
         recs = [one_run(n, level) for n in range(start, start + runs)]
     finally:
-        sh("docker", "compose", "down", "-v", check=False)
+        sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     print(f"Ran {len(recs)} runs; see individual outcomes above.")
 
 if __name__ == "__main__":

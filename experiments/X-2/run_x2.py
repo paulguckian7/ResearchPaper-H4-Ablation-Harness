@@ -110,7 +110,7 @@ def one_run(n, level):
     if run_dir.exists():
         raise RuntimeError(f"{run_dir} exists; results are append-only")
     run_dir.mkdir(parents=True)
-    sh("docker", "compose", "down", "-v", check=False)
+    sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     sh("docker", "compose", "up", "-d", "--build")
     wait_up()
     (run_dir / "docker-compose.resolved.yaml").write_text(sh("docker", "compose", "config").stdout, encoding="utf-8")
@@ -190,7 +190,7 @@ def main():
             if existing: start = max(existing) + 1
         recs = [one_run(n, level) for n in range(start, start + runs)]
     finally:
-        sh("docker", "compose", "down", "-v", check=False)
+        sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     outcomes = {}
     for r in recs: outcomes[r["outcome"]] = outcomes.get(r["outcome"], 0) + 1
     print("Summary:", outcomes)

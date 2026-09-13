@@ -124,7 +124,7 @@ def sub_ablation(n, level, sub_id, stop_service, prediction):
         raise RuntimeError(f"{run_dir} exists; results are append-only")
     run_dir.mkdir(parents=True)
 
-    sh("docker", "compose", "down", "-v", check=False)
+    sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     sh("docker", "compose", "up", "-d", "--build")
     wait_up()
     (run_dir / "docker-compose.resolved.yaml").write_text(sh("docker", "compose", "config").stdout, encoding="utf-8")
@@ -174,7 +174,7 @@ def sub_ablation(n, level, sub_id, stop_service, prediction):
         "outcome": outcome, "source_sha256": src_hashes,
     }
     (run_dir / "record.json").write_text(json.dumps(record, indent=2))
-    sh("docker", "compose", "down", "-v", check=False)
+    sh("docker", "compose", "down", "-v", "--remove-orphans", check=False)  # --remove-orphans added: catches containers left behind by a Ctrl+C mid-command, which a plain "down -v" can miss
     print(f"C-3{sub_id} {level} run {n} (stopped {stop_service}): "
           f"baseline={tuple(baseline)} post={tuple(post)} => {outcome}")
     return record
