@@ -1,15 +1,21 @@
 cff-version: 1.2.0
-message: "If you use this test harness, please cite the associated paper and this software release."
-title: "H4 Ablation Harness"
-version: "0.1.1"
-date-released: 2026-09-11
+title: H4 Ablation Harness
+message: If you use this harness, please cite the associated paper and this software release.
+type: software
 authors:
-  - family-names: "Guckian"
-    given-names: "Paul"
+  - family-names: Guckian
+    given-names: Paul
+    affiliation: Independent Researcher, London, United Kingdom
+repository-code: https://github.com/paulguckian7/ResearchPaper-H4-Ablation-Harness
 license: MIT
-doi: 10.5281/zenodo.22711458
-repository-code: "https://github.com/paulguckian7/ResearchPaper-H4-Ablation-Harness"
-abstract: "Reproducible Docker/Python harness for controlled ablation tests of Interface, Execution Pathway and Authority correspondence."
+version: 1.0.0
+date-released: 2026-09-13
+doi: 10.5281/zenodo.22711457
+abstract: >-
+  Reproducible Docker/Python harness for controlled ablation tests of Interface,
+  Execution Pathway and Authority correspondence, covering fourteen configurations
+  across the relation classes, both Authority forms and the Cut tests, with fixed
+  predictions, run records and per-case assessment records.
 keywords:
   - cybersecurity
   - ablation
@@ -17,3 +23,4 @@ keywords:
   - interface
   - execution pathway
   - authority
+  - systemic risk
