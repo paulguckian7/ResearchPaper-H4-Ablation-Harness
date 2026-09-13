@@ -1,0 +1,36 @@
+[
+  {
+    "ts": 1789152800.464779,
+    "event": "reset"
+  },
+  {
+    "ts": 1789152802.4187622,
+    "event": "interface_admit",
+    "source": "T"
+  },
+  {
+    "ts": 1789152802.4191883,
+    "event": "handler_reached",
+    "source": "T",
+    "value": 42,
+    "marker": false
+  },
+  {
+    "ts": 1789152802.41938,
+    "event": "authority_denied",
+    "source": "T",
+    "reason": "PermissionError(13, 'Permission denied')"
+  },
+  {
+    "ts": 1789152802.9617193,
+    "event": "handler_reached",
+    "source": "internal-x-marker",
+    "value": 0,
+    "marker": true
+  },
+  {
+    "ts": 1789152804.0768142,
+    "event": "authority_probe_denied",
+    "reason": "PermissionError(13, 'Permission denied')"
+  }
+]

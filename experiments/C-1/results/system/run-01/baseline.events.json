@@ -1,0 +1,43 @@
+[
+  {
+    "ts": 1789154043.506073,
+    "event": "reset"
+  },
+  {
+    "ts": 1789154044.2192922,
+    "event": "interface_admit",
+    "route": "router1"
+  },
+  {
+    "ts": 1789154044.219508,
+    "event": "handler_reached",
+    "route": "router1",
+    "marker": true
+  },
+  {
+    "ts": 1789154044.2198524,
+    "event": "route_probe_reached",
+    "route": "router1"
+  },
+  {
+    "ts": 1789154044.7466342,
+    "event": "interface_admit",
+    "route": "router1"
+  },
+  {
+    "ts": 1789154044.7468753,
+    "event": "handler_reached",
+    "route": "router1",
+    "marker": false
+  },
+  {
+    "ts": 1789154044.747255,
+    "event": "state_write",
+    "route": "router1",
+    "value": 42
+  },
+  {
+    "ts": 1789154045.3635063,
+    "event": "authority_probe_write"
+  }
+]

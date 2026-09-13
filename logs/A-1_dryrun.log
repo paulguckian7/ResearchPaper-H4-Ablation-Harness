@@ -1,0 +1,16 @@
+﻿Dry run only: A-1 WILL NOT BE EXECUTED.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+SHA256 A-1.yaml: 3a89f1fdda641c3fce07e4f983e2e4c9c090c04b7295304fb5277eaea76a5061
+SHA256 docker-compose.yml: 4dfad73d416b58692ec4055a139cf6ad8feb843e1fc5d9045d663ad0451d1c78
+SHA256 rp.py: 0481d73417790c6c422d7ec9340e7ce831abddb790b14e449320ba233b266601
+SHA256 issue_and_send.py: f1227c9bd682495925d668ad8eadd78847944561f6f25fdf6db4b636f73842a9
+SHA256 issue_and_send.py: 1aadec6d01902d837bbb6e7ac2e483446d768ec4506dd5ab26f3115307374e23
+
+Note: the build step pip-installs pyjwt and cryptography and
+needs network access the first time.
+Harness is ready.

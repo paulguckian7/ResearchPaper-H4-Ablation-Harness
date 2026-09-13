@@ -1,0 +1,57 @@
+{
+  "test": "X-1",
+  "harness_version": "0.2.0",
+  "run": 5,
+  "level": "system",
+  "timestamp_utc": "2026-09-12T06:04:42.696068+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "post_observed": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "X-1.yaml": "164593a2510105b117f45bc8e26627814a8f9887d641f64f72c48ddf3c084e98",
+    "docker-compose.yml": "967faf56822bd07c47a26674f6eed394ba20d5ffe31e3edacbb84ffb91f02176",
+    "router.py": "3cbee299f8a4c3f22bfdf9f9554d369e6fb2a9a4f6e09c7e98865232a79d72d5",
+    "sink.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "d5a9b1e8ebe3aef4e6e181bb61d5bd33f0ac04e474f2ff3be851f7703f685bcb",
+    "internal_probe.py": "b619843d014fea5798bdfc8cae970b87c85de401c2c95e080be40532ed10e318"
+  },
+  "op_result": {
+    "status": 200,
+    "body": {
+      "admitted": true,
+      "routed": false
+    }
+  },
+  "marker_result": [
+    200,
+    {
+      "admitted": true,
+      "routed": false
+    }
+  ],
+  "removed_binding_result": {
+    "ok": true
+  }
+}

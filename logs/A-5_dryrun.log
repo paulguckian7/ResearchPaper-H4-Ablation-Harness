@@ -1,0 +1,16 @@
+﻿Dry run only: A-5 WILL NOT BE EXECUTED.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+SHA256 A-5.yaml: 8b6e646f77d11e57a28a79d8420a48097bcff8ed2d2e284614e2c900d03867c2
+SHA256 docker-compose.yml: 03d8778164eb1cb73bfb6b2d0cde23e6caba7311d6f6a030c87af898fece7564
+SHA256 agent.py: 001729ccd08964ed7279f4dc578078f886d3e815394a01efd68ff879f451de3b
+SHA256 internal_probe.py: b619843d014fea5798bdfc8cae970b87c85de401c2c95e080be40532ed10e318
+SHA256 send.py: 8672bfd32d362e4e8e389f101dceffeef7d38cfce58dda5ab6d30c69c12d82c6
+
+Harness is ready. Note: this experiment's PASS outcome means the
+negative-case prediction was CONFIRMED (no source-specific ablation
+exists), not that anything 'worked' in the usual sense.

@@ -1,0 +1,73 @@
+name: a-3
+services:
+  agent-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-3\agent
+      dockerfile: Dockerfile
+    container_name: h4-a3-agent-c
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18121"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a3c-data
+      target: /data
+      volume: {}
+  agent-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-3\agent
+      dockerfile: Dockerfile
+    container_name: h4-a3-agent-t
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18120"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a3t-data
+      target: /data
+      volume: {}
+  source-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-3\source
+      dockerfile: Dockerfile
+    container_name: h4-a3-source-c
+    depends_on:
+      agent-c:
+        condition: service_started
+    environment:
+      SOURCE_NAME: C
+      TARGET: agent-c
+    networks:
+      h4net: null
+  source-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-3\source
+      dockerfile: Dockerfile
+    container_name: h4-a3-source-t
+    depends_on:
+      agent-t:
+        condition: service_started
+    environment:
+      SOURCE_NAME: T
+      TARGET: agent-t
+    networks:
+      h4net: null
+networks:
+  h4net:
+    name: a-3_h4net
+    driver: bridge
+volumes:
+  a3c-data:
+    name: a-3_a3c-data
+  a3t-data:
+    name: a-3_a3t-data

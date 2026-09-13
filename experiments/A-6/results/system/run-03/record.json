@@ -1,0 +1,51 @@
+{
+  "test": "A-6",
+  "harness_version": "0.2.0",
+  "run": 3,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T19:12:29.886202+00:00",
+  "baseline_T": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "control_prediction_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "control_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "A-6.yaml": "e0f6ab3742dce04a33f7aec2bcdc2cc87717d67399f3a42c8ce02406f95076b4",
+    "docker-compose.yml": "29df55fa595dbcc5a23ae4dad5d44ff1d61b06615de83edd0be8d1d874cf2272",
+    "client.py": "e0f4fb5c2636b3272a277043867a33d881508e7a83ff5fa5bc442328a8a49fd0",
+    "resolver.py": "b561e550dc4d06ca40e7ebdfe75a5e1672a802dc5c06015c2f9b751b630d9086",
+    "target.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030"
+  }
+}

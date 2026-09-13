@@ -1,0 +1,15 @@
+﻿Dry run only: A-3 WILL NOT BE EXECUTED.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+SHA256 A-3.yaml: 992f7d2c16f6da48482922c82f12496bd7e77a79d7a03caa3fab9ff8af7fca36
+SHA256 docker-compose.yml: 2bfa61f3fbb1cc9c4114fd6cba6c46e5d00fb9e602b54d1616188ead2b042fe5
+SHA256 agent.py: 001729ccd08964ed7279f4dc578078f886d3e815394a01efd68ff879f451de3b
+SHA256 internal_probe.py: b619843d014fea5798bdfc8cae970b87c85de401c2c95e080be40532ed10e318
+SHA256 send.py: 8672bfd32d362e4e8e389f101dceffeef7d38cfce58dda5ab6d30c69c12d82c6
+
+Harness is ready.
+Use --execute only after any intended preregistration is frozen/deposited.

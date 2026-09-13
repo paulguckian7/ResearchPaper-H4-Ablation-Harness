@@ -1,0 +1,9 @@
+﻿WARNING: this executes preregistered H4 configuration C-1.
+Level: system
+Runs: 5
+Type EXECUTE to continue: C-1 system run 7: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-1 system run 8: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-1 system run 9: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-1 system run 10: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-1 system run 11: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+Summary: {'PASS': 5}

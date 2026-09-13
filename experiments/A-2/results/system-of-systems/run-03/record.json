@@ -1,0 +1,51 @@
+{
+  "test": "A-2",
+  "harness_version": "0.2.0",
+  "run": 3,
+  "level": "system-of-systems",
+  "timestamp_utc": "2026-09-11T20:21:14.232454+00:00",
+  "baseline_T": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "control_prediction_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "control_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "A-2.yaml": "99684e0fddc65d3d945314b758a3c4ead3857feaf0af78f60c655bbe5b53f0a6",
+    "docker-compose.yml": "1ca690f0ef164cadb05f327e59a8bfc2bd222dcdcb6c0f26905fe0ba48b4a444",
+    "rp.py": "40feb6a118dbc56cd764f9ce0a614dfcf962ac0562c2c260f32300bab68c58a0",
+    "send.py": "2ba1ccbecd10c9b7db01f76599a75eb0528c0964117c96f9f752f0f1e27c0f3e"
+  },
+  "note": "No-cert sanity check is manual -- see manifest 'sanity_check'."
+}

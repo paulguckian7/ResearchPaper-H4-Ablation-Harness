@@ -6,11 +6,46 @@ ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 RECEIVERS = ["receiver-1", "receiver-2", "receiver-3"]
 
+# Bug fixed here: "docker compose up --build" failed intermittently
+# with "Error response from daemon: i/o timeout" under sustained batch
+# use -- confirmed multiple times on real runs, always transient (the
+# same command succeeds seconds later with no code change). This is a
+# Docker Desktop daemon/proxy issue, not a defect in the command being
+# run, so the correct fix is to retry automatically rather than fail
+# the whole run. Retries apply ONLY to docker/docker-compose
+# invocations, never to anything else "sh" runs -- a genuine test
+# failure (an assertion on the observed I/X/A/O tuple, for instance)
+# never goes through this function at all, so retrying here cannot
+# mask a real result.
+import time as _time
+
+def _sh_with_retry(args, check=True, timeout=None, max_attempts=4):
+    is_docker = len(args) > 0 and args[0] in ("docker",)
+    attempts = max_attempts if is_docker else 1
+    delays = [5, 15, 30]
+    last = None
+    for attempt in range(attempts):
+        kwargs = dict(cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+        p = subprocess.run(args, **kwargs)
+        if p.returncode == 0:
+            return p
+        transient = is_docker and (
+            "i/o timeout" in (p.stderr or "") or "i/o timeout" in (p.stdout or "")
+        )
+        last = p
+        if not transient or attempt == attempts - 1:
+            break
+        wait = delays[min(attempt, len(delays) - 1)]
+        print(f"  transient Docker error, retrying in {wait}s (attempt {attempt+1}/{attempts})...")
+        _time.sleep(wait)
+    if check and last.returncode != 0:
+        raise RuntimeError(f"cmd failed: {args}\n{last.stdout}\n{last.stderr}")
+    return last
+
 def sh(*args, check=True):
-    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
-    if check and p.returncode != 0:
-        raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
-    return p
+    return _sh_with_retry(args, check=check)
 
 def publish(mode="publish"):
     p = sh("docker", "compose", "exec", "-T", "source-t", "python", "/app/publish.py", mode)

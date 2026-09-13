@@ -1,0 +1,53 @@
+name: a-5
+services:
+  agent:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-5\agent
+      dockerfile: Dockerfile
+    container_name: h4-a5-agent
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18130"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a5data
+      target: /data
+      volume: {}
+  source-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-5\source
+      dockerfile: Dockerfile
+    container_name: h4-a5-source-c
+    depends_on:
+      agent:
+        condition: service_started
+    environment:
+      SOURCE_NAME: C
+      TARGET: agent
+    networks:
+      h4net: null
+  source-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-5\source
+      dockerfile: Dockerfile
+    container_name: h4-a5-source-t
+    depends_on:
+      agent:
+        condition: service_started
+    environment:
+      SOURCE_NAME: T
+      TARGET: agent
+    networks:
+      h4net: null
+networks:
+  h4net:
+    name: a-5_h4net
+    driver: bridge
+volumes:
+  a5data:
+    name: a-5_a5data

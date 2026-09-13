@@ -1,0 +1,66 @@
+[
+  {
+    "ts": 1789156069.051925,
+    "event": "reset"
+  },
+  {
+    "ts": 1789156070.3874648,
+    "event": "interface_admit",
+    "source": "T"
+  },
+  {
+    "ts": 1789156070.3878593,
+    "event": "handler_reached",
+    "source": "T",
+    "value": 42,
+    "marker": false
+  },
+  {
+    "ts": 1789156070.3880246,
+    "event": "authority_denied",
+    "source": "T",
+    "reason": "PermissionError(13, 'Permission denied')"
+  },
+  {
+    "ts": 1789156070.9046319,
+    "event": "handler_reached",
+    "source": "internal-x-marker",
+    "value": 0,
+    "marker": true
+  },
+  {
+    "ts": 1789156071.982966,
+    "event": "authority_probe_denied",
+    "reason": "PermissionError(13, 'Permission denied')"
+  },
+  {
+    "ts": 1789156072.4809754,
+    "event": "interface_admit",
+    "source": "C"
+  },
+  {
+    "ts": 1789156072.4812996,
+    "event": "handler_reached",
+    "source": "C",
+    "value": 42,
+    "marker": false
+  },
+  {
+    "ts": 1789156072.481472,
+    "event": "authority_denied",
+    "source": "C",
+    "reason": "PermissionError(13, 'Permission denied')"
+  },
+  {
+    "ts": 1789156073.0107944,
+    "event": "handler_reached",
+    "source": "internal-x-marker",
+    "value": 0,
+    "marker": true
+  },
+  {
+    "ts": 1789156074.017644,
+    "event": "authority_probe_denied",
+    "reason": "PermissionError(13, 'Permission denied')"
+  }
+]

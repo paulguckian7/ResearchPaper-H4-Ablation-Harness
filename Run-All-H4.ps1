@@ -1,7 +1,21 @@
 <#
 .SYNOPSIS
-    Runs every VERIFIED H4 configuration's confirmatory ablation, piping
-    "EXECUTE" into each runner's confirmation prompt automatically.
+    Runs every H4 configuration's confirmatory ablation, piping "EXECUTE"
+    into each runner's confirmation prompt automatically.
+
+.STATUS (as of this rewrite)
+    All 15 configurations have been executed for real on Docker at least
+    once and passed. Ten real bugs were found and fixed getting here --
+    see each config's manifest "status" field and the harness README for
+    specifics. None were in the underlying claims about Interface,
+    Execution Pathway or Authority; all were in the scaffolding measuring
+    them (evidence coupling, polarity inversion, readiness races, a
+    nonexistent Docker tag, root-vs-non-root identity, a commodity
+    tool's internal behaviour not matching an initial assumption about
+    it). There is no more "unverified" tier -- an earlier version of
+    this script excluded I-2, X-2 and A-4 by default because they
+    genuinely had never been run; that is no longer true, so that
+    distinction is removed here.
 
 .WHAT THIS DOES AND DOES NOT DO
     - Pipes the literal string "EXECUTE" into each runner's stdin, which
@@ -14,12 +28,8 @@
     - Runs BOTH --level system and --level system-of-systems for I-1,
       X-1, A-1, A-2, A-3, A-5 (same technical mechanism, different
       governance label -- see each manifest's note on this). Runs only
-      --level system for A-6 and every C-config (governance is fixed in
-      the container topology for these, not toggled by a flag).
-    - Does NOT run I-2, X-2, or A-4 unless you pass -IncludeUnverified.
-      These need mosquitto/nginx/ClamAV behaviour nobody has watched
-      succeed yet -- read their manifests' known_risks before including
-      them, and even then run them manually first, not in a blind batch.
+      --level system for everything else (A-6, every C-config, and
+      I-2/X-2/A-4, none of which have a second level built).
     - Continues past a FAIL/AMBIGUOUS outcome by default (these are
       independent experiments; one failing doesn't invalidate the
       others) but prints it prominently and includes it in the final
@@ -27,6 +37,16 @@
       first non-PASS instead.
     - Writes full stdout/stderr for every run to logs\<ID>_<level>.log,
       so nothing is lost even though the console only shows a summary.
+    - Numbers of existing runs are respected -- if a config already has
+      run-01/run-02 from earlier manual testing, this continues from
+      run-03, it does not overwrite or duplicate.
+
+.A NOTE ON A-4's RUNTIME
+    A-4 tears down and rebuilds its container between every run
+    (docker compose down -v), which means the multi-minute signature
+    download and clamd startup wait happens fresh for EACH of the 5
+    runs, not once for the batch. This is expected, not a hang -- budget
+    real time for it.
 
 .USAGE
     cd C:\Research\H4_Ablation_Harness
@@ -35,23 +55,55 @@
     Options:
     .\Run-All-H4.ps1 -Runs 5 -StopOnFailure
     .\Run-All-H4.ps1 -Only A-3,A-5,A-6,C-1,C-2,C-3   # just the Authority/Cut priority set
-    .\Run-All-H4.ps1 -IncludeUnverified              # also attempts I-2, X-2, A-4
+    .\Run-All-H4.ps1 -Only A-4                       # just the slow one, on its own
 #>
 
 param(
     [int]$Runs = 5,
     [switch]$StopOnFailure,
-    [switch]$IncludeUnverified,
     [string[]]$Only = @()
 )
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Get-Location
 
-# Config -> (runner script, levels to run). Levels list has one entry
-# per invocation; "system" and "system-of-systems" for the dual-level
-# ones, just "system" for everything else.
-$verified = [ordered]@{
+# Bug fixed here, twice. A native program (python.exe) writing to
+# stderr -- which a real crash does, via its traceback -- gets promoted
+# to a PowerShell-level TERMINATING error under $ErrorActionPreference
+# = "Stop". That meant a real Python crash aborted this script BEFORE
+# the Out-File line that logs the output ever ran, so the log for that
+# config was never created. Confirmed twice on real batch runs: once
+# on PowerShell 7 (X-1 crashed, log missing), and again after a first
+# fix that only covered PowerShell 7.3+'s
+# $PSNativeCommandUseErrorActionPreference setting -- which does not
+# exist on Windows PowerShell 5.1, the engine actually in use here (the
+# console banner reads "Windows PowerShell", not "PowerShell 7"). The
+# underlying stderr-becomes-terminating-error behaviour is present on
+# every PowerShell version via an older mechanism, not just 7.3+, so a
+# version-gated fix targeting only the newer setting left 5.1
+# unprotected. Fixed properly this time with a helper that runs a
+# native command under a LOCALLY relaxed error preference, restored
+# immediately afterward, which works identically on every PowerShell
+# version rather than depending on a version-specific setting.
+function Invoke-Native {
+    param([string]$Exe, [string[]]$ArgList, [string]$StdinText = $null)
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        if ($StdinText) {
+            $out = $StdinText | & $Exe @ArgList 2>&1
+        } else {
+            $out = & $Exe @ArgList 2>&1
+        }
+        return @{ Output = $out; ExitCode = $LASTEXITCODE }
+    } finally {
+        $ErrorActionPreference = $prev
+    }
+}
+
+# Config -> (runner script, levels to run). All 15 configurations,
+# all confirmed on real Docker as of this rewrite.
+$all = [ordered]@{
     "A-3"  = @{ runner = "run_a3.py";  levels = @("system", "system-of-systems") }
     "A-5"  = @{ runner = "run_a5.py";  levels = @("system", "system-of-systems") }
     "A-6"  = @{ runner = "run_a6.py";  levels = @("system") }
@@ -64,23 +116,17 @@ $verified = [ordered]@{
     "C-4a" = @{ runner = "run_c4a.py"; levels = @("system") }
     "C-4b" = @{ runner = "run_c4b.py"; levels = @("system") }
     "C-4c" = @{ runner = "run_c4c.py"; levels = @("system") }
-}
-$unverified = [ordered]@{
-    "I-2" = @{ runner = "run_i2.py"; levels = @("system") }
-    "X-2" = @{ runner = "run_x2.py"; levels = @("system") }
-    "A-4" = @{ runner = "run_a4.py"; levels = @("system") }
+    "I-2"  = @{ runner = "run_i2.py";  levels = @("system") }
+    "X-2"  = @{ runner = "run_x2.py";  levels = @("system") }
+    "A-4"  = @{ runner = "run_a4.py";  levels = @("system") }
 }
 
-$toRun = [ordered]@{}
-foreach ($k in $verified.Keys) { $toRun[$k] = $verified[$k] }
-if ($IncludeUnverified) {
-    foreach ($k in $unverified.Keys) { $toRun[$k] = $unverified[$k] }
-}
+$toRun = $all
 if ($Only.Count -gt 0) {
     $filtered = [ordered]@{}
     foreach ($k in $Only) {
         if ($toRun.Contains($k)) { $filtered[$k] = $toRun[$k] }
-        else { Write-Warning "Requested '$k' is not in the runnable set (check spelling / -IncludeUnverified)." }
+        else { Write-Warning "Requested '$k' is not a known configuration (check spelling)." }
     }
     $toRun = $filtered
 }
@@ -96,9 +142,9 @@ foreach ($id in $toRun.Keys) {
     $levelsStr = $toRun[$id].levels -join ", "
     Write-Host "  $id  ->  $($toRun[$id].runner)  [$levelsStr]  x$Runs runs each"
 }
-if (-not $IncludeUnverified) {
+if ($toRun.Contains("A-4")) {
     Write-Host ""
-    Write-Host "  (I-2, X-2, A-4 excluded -- pass -IncludeUnverified to attempt them)" -ForegroundColor Yellow
+    Write-Host "  Note: A-4 rebuilds and re-downloads signatures on every run -- expect this one to dominate total time." -ForegroundColor Yellow
 }
 Write-Host ""
 
@@ -115,10 +161,13 @@ foreach ($id in $toRun.Keys) {
     try {
         Write-Host "--- $id : dry-run ---" -ForegroundColor Cyan
         $dryLog = Join-Path $logDir "$($id)_dryrun.log"
-        $dryOutput = & python $cfg.runner --dry-run 2>&1
+        # Log FIRST, before anything else can throw and skip it.
+        $dryResult = Invoke-Native -Exe "python" -ArgList @($cfg.runner, "--dry-run")
+        $dryOutput = $dryResult.Output
+        $dryExit = $dryResult.ExitCode
         $dryOutput | Out-File -FilePath $dryLog -Encoding utf8
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  DRY RUN FAILED (exit $LASTEXITCODE) -- see $dryLog" -ForegroundColor Red
+        if ($dryExit -ne 0) {
+            Write-Host "  DRY RUN FAILED (exit $dryExit) -- see $dryLog" -ForegroundColor Red
             $results += [pscustomobject]@{ Id = $id; Level = "-"; Outcome = "DRY-RUN FAILED" }
             if ($StopOnFailure) { throw "Stopping: dry-run failed for $id" }
             continue
@@ -129,7 +178,13 @@ foreach ($id in $toRun.Keys) {
             Write-Host "--- $id : --level $level, --runs $Runs ---" -ForegroundColor Cyan
             $runLog = Join-Path $logDir "$($id)_$($level).log"
 
-            $output = "EXECUTE" | & python $cfg.runner --execute --runs $Runs --level $level 2>&1
+            # Same fix: log the output BEFORE checking exit code or
+            # doing anything else that could throw, so a real crash is
+            # always captured on disk, not just shown (and possibly
+            # truncated/mangled) in the console.
+            $runResult = Invoke-Native -Exe "python" -ArgList @($cfg.runner, "--execute", "--runs", $Runs, "--level", $level) -StdinText "EXECUTE"
+            $output = $runResult.Output
+            $runExit = $runResult.ExitCode
             $output | Out-File -FilePath $runLog -Encoding utf8
 
             $summaryLine = $output | Select-String -Pattern "^Summary:" | Select-Object -Last 1
@@ -137,8 +192,8 @@ foreach ($id in $toRun.Keys) {
             $failLine = $output | Select-String -Pattern "=> FAIL" | Measure-Object
             $ambigLine = $output | Select-String -Pattern "AMBIGUOUS" | Measure-Object
 
-            if ($LASTEXITCODE -ne 0) {
-                Write-Host "  RUNNER EXITED WITH ERROR (exit $LASTEXITCODE) -- see $runLog" -ForegroundColor Red
+            if ($runExit -ne 0) {
+                Write-Host "  RUNNER EXITED WITH ERROR (exit $runExit) -- see $runLog" -ForegroundColor Red
                 $outcome = "ERROR"
             } elseif ($failLine.Count -gt 0 -or $ambigLine.Count -gt 0) {
                 Write-Host "  $($passLine.Count) pass, $($failLine.Count) fail, $($ambigLine.Count) ambiguous -- see $runLog" -ForegroundColor Yellow
@@ -150,7 +205,7 @@ foreach ($id in $toRun.Keys) {
 
             $results += [pscustomobject]@{ Id = $id; Level = $level; Outcome = $outcome }
 
-            if ($LASTEXITCODE -ne 0 -and $StopOnFailure) {
+            if ($runExit -ne 0 -and $StopOnFailure) {
                 throw "Stopping: $id --level $level exited with an error"
             }
             if ($failLine.Count -gt 0 -and $StopOnFailure) {

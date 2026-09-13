@@ -1,0 +1,9 @@
+﻿WARNING: this executes preregistered H4 configuration A-3.
+Level: system-of-systems
+Runs: 5
+Type EXECUTE to continue: A-3 system-of-systems run 6: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+A-3 system-of-systems run 7: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+A-3 system-of-systems run 8: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+A-3 system-of-systems run 9: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+A-3 system-of-systems run 10: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+Summary: {'PASS': 5}

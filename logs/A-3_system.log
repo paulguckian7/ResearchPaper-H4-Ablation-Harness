@@ -1,0 +1,25 @@
+﻿WARNING: this executes preregistered H4 configuration A-3.
+Level: system
+Runs: 5
+Type EXECUTE to continue: A-3 system run 23: T baseline=(1, 1, 1, 1) T post=(1, 1, 0, 0) C control=(1, 1, 1, 1) => PASS
+python.exe : Traceback (most recent call last):
+At C:\Research\H4_Ablation_Harness\Run-All-H4.ps1:94 char:33
++             $out = $StdinText | & $Exe @ArgList 2>&1
++                                 ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Research\H4_Ablation_Harness\experiments\A-3\run_a3.py", line 191, in <module>
+    main()
+  File "C:\Research\H4_Ablation_Harness\experiments\A-3\run_a3.py", line 183, in main
+    recs = [one_run(n, level) for n in range(start, start + runs)]
+  File "C:\Research\H4_Ablation_Harness\experiments\A-3\run_a3.py", line 183, in <listcomp>
+    recs = [one_run(n, level) for n in range(start, start + runs)]
+  File "C:\Research\H4_Ablation_Harness\experiments\A-3\run_a3.py", line 66, in one_run
+    sh("docker", "compose", "up", "-d", "--build")
+  File "C:\Research\H4_Ablation_Harness\experiments\A-3\run_a3.py", line 12, in sh
+    raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
+RuntimeError: cmd failed: ('docker', 'compose', 'up', '-d', '--build')
+
+Error response from daemon: i/o timeout
+

@@ -1,0 +1,57 @@
+{
+  "test": "A-3",
+  "harness_version": "0.2.0",
+  "run": 3,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T18:52:06.758276+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed_T": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_observed_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "control_prediction_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "control_observed_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "A-3.yaml": "992f7d2c16f6da48482922c82f12496bd7e77a79d7a03caa3fab9ff8af7fca36",
+    "docker-compose.yml": "2bfa61f3fbb1cc9c4114fd6cba6c46e5d00fb9e602b54d1616188ead2b042fe5",
+    "agent.py": "001729ccd08964ed7279f4dc578078f886d3e815394a01efd68ff879f451de3b",
+    "internal_probe.py": "b619843d014fea5798bdfc8cae970b87c85de401c2c95e080be40532ed10e318",
+    "send.py": "8672bfd32d362e4e8e389f101dceffeef7d38cfce58dda5ab6d30c69c12d82c6"
+  }
+}

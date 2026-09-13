@@ -1,0 +1,11 @@
+{
+  "process_uid": 10001,
+  "process_gid": 10001,
+  "state_path": "/data/state.json",
+  "state_owner_uid": 10001,
+  "state_owner_gid": 10001,
+  "state_mode": "0o444",
+  "data_dir_mode": "0o555",
+  "state_writable_by_process": false,
+  "data_dir_writable_by_process": false
+}

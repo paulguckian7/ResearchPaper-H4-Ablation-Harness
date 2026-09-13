@@ -1,0 +1,12 @@
+{
+  "role_policy": {
+    "issuer-t": [],
+    "issuer-c": [
+      "admin"
+    ]
+  },
+  "trusted_issuers": [
+    "issuer-t",
+    "issuer-c"
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "ts": 1789194032.9344895,
+    "event": "reset"
+  },
+  {
+    "ts": 1789194033.4706826,
+    "event": "interface_admit",
+    "route": "default"
+  },
+  {
+    "ts": 1789194033.4707475,
+    "event": "handler_reached",
+    "route": "default",
+    "marker": false
+  },
+  {
+    "ts": 1789194033.4709651,
+    "event": "state_write",
+    "route": "default",
+    "value": 42
+  }
+]

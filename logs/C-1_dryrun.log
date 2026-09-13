@@ -1,0 +1,14 @@
+﻿Dry run only: C-1 WILL NOT BE EXECUTED.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+SHA256 C-1.yaml: 6adb95efb734fa4366b7501015d181e484769ee39aabb92a2b670e644c074928
+SHA256 docker-compose.yml: db263fcbb01006299eea067f7fb19db12f8f26c01e5849b0931599ea677a5109
+SHA256 router.py: 3cbee299f8a4c3f22bfdf9f9554d369e6fb2a9a4f6e09c7e98865232a79d72d5
+SHA256 sink.py: d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030
+SHA256 send.py: 4ddefd7ef95e854e3c0101be7dff01613eabb86f39c4ed098dda39f1f91f9a5b
+
+Harness is ready.

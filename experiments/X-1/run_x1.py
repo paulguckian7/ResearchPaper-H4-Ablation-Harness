@@ -6,11 +6,46 @@ import hashlib
 ROOT = Path(__file__).resolve().parent
 RESULTS = ROOT / "results"
 
+# Bug fixed here: "docker compose up --build" failed intermittently
+# with "Error response from daemon: i/o timeout" under sustained batch
+# use -- confirmed multiple times on real runs, always transient (the
+# same command succeeds seconds later with no code change). This is a
+# Docker Desktop daemon/proxy issue, not a defect in the command being
+# run, so the correct fix is to retry automatically rather than fail
+# the whole run. Retries apply ONLY to docker/docker-compose
+# invocations, never to anything else "sh" runs -- a genuine test
+# failure (an assertion on the observed I/X/A/O tuple, for instance)
+# never goes through this function at all, so retrying here cannot
+# mask a real result.
+import time as _time
+
+def _sh_with_retry(args, check=True, timeout=None, max_attempts=4):
+    is_docker = len(args) > 0 and args[0] in ("docker",)
+    attempts = max_attempts if is_docker else 1
+    delays = [5, 15, 30]
+    last = None
+    for attempt in range(attempts):
+        kwargs = dict(cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+        p = subprocess.run(args, **kwargs)
+        if p.returncode == 0:
+            return p
+        transient = is_docker and (
+            "i/o timeout" in (p.stderr or "") or "i/o timeout" in (p.stdout or "")
+        )
+        last = p
+        if not transient or attempt == attempts - 1:
+            break
+        wait = delays[min(attempt, len(delays) - 1)]
+        print(f"  transient Docker error, retrying in {wait}s (attempt {attempt+1}/{attempts})...")
+        _time.sleep(wait)
+    if check and last.returncode != 0:
+        raise RuntimeError(f"cmd failed: {args}\n{last.stdout}\n{last.stderr}")
+    return last
+
 def sh(*args, check=True):
-    p = subprocess.run(args, cwd=ROOT, encoding="utf-8", errors="replace", capture_output=True)
-    if check and p.returncode != 0:
-        raise RuntimeError(f"cmd failed: {args}\n{p.stdout}\n{p.stderr}")
-    return p
+    return _sh_with_retry(args, check=check)
 
 def get(url):
     with urllib.request.urlopen(url, timeout=5) as r:
@@ -111,25 +146,34 @@ def one_run(n, level):
     X_post = any(e["event"] in ("state_write", "route_probe_reached") for e in sink_events2)
     A_post = auth_probe2.get("authority_probe") == "ok" and access2.get("state_writable_by_process") is True
     O_post = sink_state2["state"].get("test_value") == 42
-    post = [int(I_post), int(X_post), int(A_post), int(O_post)]
+    # Bug fixed here: this local variable was named "post", which
+    # shadows the module-level post() HTTP helper function (defined
+    # near the top of this file) for the WHOLE of one_run(), including
+    # the earlier call to post() for the marker probe -- Python decides
+    # a name's scope from any assignment anywhere in the function, not
+    # from execution order. Confirmed by a real run: it crashed with
+    # UnboundLocalError at the marker_result = post(...) call, meaning
+    # this function had never actually completed via run_x1.py before.
+    # Renamed to avoid the collision.
+    post_tuple = [int(I_post), int(X_post), int(A_post), int(O_post)]
 
     (run_dir / "post.events.json").write_text(json.dumps(sink_events2, indent=2))
     (run_dir / "post.state.json").write_text(json.dumps(sink_state2, indent=2))
     (run_dir / "post.access_state.json").write_text(json.dumps(access2, indent=2))
 
-    outcome = "PASS" if (baseline == [1,1,1,1] and post == [1,0,1,0]) else "FAIL"
+    outcome = "PASS" if (baseline == [1,1,1,1] and post_tuple == [1,0,1,0]) else "FAIL"
 
     record = {
         "test": "X-1", "harness_version": "0.2.0", "run": n, "level": level,
         "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "baseline_prediction": [1,1,1,1], "baseline_observed": baseline,
-        "post_prediction": [1,0,1,0], "post_observed": post,
+        "post_prediction": [1,0,1,0], "post_observed": post_tuple,
         "outcome": outcome, "source_sha256": src_hashes,
         "op_result": op_result, "marker_result": marker_result,
         "removed_binding_result": removed,
     }
     (run_dir / "record.json").write_text(json.dumps(record, indent=2))
-    print(f"X-1 {level} run {n}: baseline={tuple(baseline)} post={tuple(post)} => {outcome}")
+    print(f"X-1 {level} run {n}: baseline={tuple(baseline)} post={tuple(post_tuple)} => {outcome}")
     return record
 
 def dry_run():

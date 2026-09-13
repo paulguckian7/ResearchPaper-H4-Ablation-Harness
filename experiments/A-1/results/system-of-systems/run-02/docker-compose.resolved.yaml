@@ -1,0 +1,53 @@
+name: a-1
+services:
+  issuer-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-1\issuer-c
+      dockerfile: Dockerfile
+    container_name: h4-a1-issuer-c
+    depends_on:
+      rp:
+        condition: service_started
+    environment:
+      ISS_NAME: issuer-c
+      RP_URL: http://rp:8080
+    networks:
+      h4net: null
+  issuer-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-1\issuer-t
+      dockerfile: Dockerfile
+    container_name: h4-a1-issuer-t
+    depends_on:
+      rp:
+        condition: service_started
+    environment:
+      ISS_NAME: issuer-t
+      RP_URL: http://rp:8080
+    networks:
+      h4net: null
+  rp:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-1\rp
+      dockerfile: Dockerfile
+    container_name: h4-a1-rp
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18180"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a1data
+      target: /data
+      volume: {}
+networks:
+  h4net:
+    name: a-1_h4net
+    driver: bridge
+volumes:
+  a1data:
+    name: a-1_a1data

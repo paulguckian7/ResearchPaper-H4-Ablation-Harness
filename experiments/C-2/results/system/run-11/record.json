@@ -1,0 +1,41 @@
+{
+  "test": "C-2",
+  "harness_version": "0.2.0",
+  "run": 11,
+  "level": "system",
+  "timestamp_utc": "2026-09-11T20:00:32.993814+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "router1_failed_alone": true,
+  "router2_succeeded_alone": true,
+  "outcome": "PASS",
+  "source_sha256": {
+    "C-2.yaml": "3f207f9cf0c9e7b0999019f6231c4adfa7f3107a11061835a441bd94ff32bcf6",
+    "docker-compose.yml": "5dc72ee5bdee8099bd8e6d400fac1151ed9963d18914692c1d36224f21f3b92d",
+    "router.py": "3cbee299f8a4c3f22bfdf9f9554d369e6fb2a9a4f6e09c7e98865232a79d72d5",
+    "sink.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "4ddefd7ef95e854e3c0101be7dff01613eabb86f39c4ed098dda39f1f91f9a5b"
+  }
+}

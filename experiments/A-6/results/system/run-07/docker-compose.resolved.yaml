@@ -1,0 +1,87 @@
+name: a-6
+services:
+  client:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-6\client
+      dockerfile: Dockerfile
+    container_name: h4-a6-client
+    depends_on:
+      resolver-c:
+        condition: service_started
+      resolver-t:
+        condition: service_started
+      target-c:
+        condition: service_started
+      target-t:
+        condition: service_started
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18172"
+      protocol: tcp
+  resolver-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-6\resolver
+      dockerfile: Dockerfile
+    container_name: h4-a6-resolver-c
+    environment:
+      TARGET_ADDRESS: http://target-c:8080
+    networks:
+      h4net: null
+  resolver-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-6\resolver
+      dockerfile: Dockerfile
+    container_name: h4-a6-resolver-t
+    environment:
+      TARGET_ADDRESS: http://target-t:8080
+    networks:
+      h4net: null
+  target-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-6\target
+      dockerfile: Dockerfile
+    container_name: h4-a6-target-c
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18171"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a6c-data
+      target: /data
+      volume: {}
+  target-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-6\target
+      dockerfile: Dockerfile
+    container_name: h4-a6-target-t
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18170"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a6t-data
+      target: /data
+      volume: {}
+networks:
+  h4net:
+    name: a-6_h4net
+    driver: bridge
+volumes:
+  a6c-data:
+    name: a-6_a6c-data
+  a6t-data:
+    name: a-6_a6t-data
