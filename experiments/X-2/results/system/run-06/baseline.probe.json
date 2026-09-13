@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "body": {
+    "admitted": true,
+    "marker_seen": true,
+    "route": "default"
+  }
+}

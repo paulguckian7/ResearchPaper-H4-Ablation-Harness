@@ -1,0 +1,56 @@
+name: a-2
+services:
+  rp:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-2\rp
+      dockerfile: Dockerfile
+    container_name: h4-a2-rp
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18190"
+      protocol: tcp
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8443
+      published: "18191"
+      protocol: tcp
+    volumes:
+    - type: volume
+      source: a2data
+      target: /data
+      volume: {}
+  source-c:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-2\source-c
+      dockerfile: Dockerfile
+    container_name: h4-a2-source-c
+    depends_on:
+      rp:
+        condition: service_started
+    environment:
+      RP_URL: https://rp:8443/admin-write
+    networks:
+      h4net: null
+  source-t:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\A-2\source-t
+      dockerfile: Dockerfile
+    container_name: h4-a2-source-t
+    depends_on:
+      rp:
+        condition: service_started
+    environment:
+      RP_URL: https://rp:8443/admin-write
+    networks:
+      h4net: null
+networks:
+  h4net:
+    name: a-2_h4net
+    driver: bridge
+volumes:
+  a2data:
+    name: a-2_a2data

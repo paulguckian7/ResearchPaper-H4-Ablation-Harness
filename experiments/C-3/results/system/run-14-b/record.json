@@ -1,0 +1,43 @@
+{
+  "test": "C-3",
+  "sub": "b",
+  "harness_version": "0.2.0",
+  "run": 14,
+  "level": "system",
+  "timestamp_utc": "2026-09-13T07:10:52.540423+00:00",
+  "stopped_service": "router1",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "router1_probe_ok": false,
+  "router2_probe_ok": true,
+  "outcome": "PASS",
+  "source_sha256": {
+    "C-3.yaml": "c3d623d8be79a3eb073832500cf5c01031aea3c90dff6c74d1f887aa7cc7ac28",
+    "docker-compose.yml": "22e7957fe106c0b36085c457f4f4593f338df9f0b20f55f73c5606ab1d570e72",
+    "router.py": "3cbee299f8a4c3f22bfdf9f9554d369e6fb2a9a4f6e09c7e98865232a79d72d5",
+    "sink.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "4ddefd7ef95e854e3c0101be7dff01613eabb86f39c4ed098dda39f1f91f9a5b"
+  }
+}

@@ -1,0 +1,9 @@
+﻿Dry run only: I-2 WILL NOT BE EXECUTED.
+
+THIS HARNESS HAS NOT BEEN FUNCTIONALLY TESTED (no local mosquitto/paho-mqtt available during development).
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+Harness is ready, but see manifest 'known_risks' before treating results as confirmatory.

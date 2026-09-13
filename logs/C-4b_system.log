@@ -1,0 +1,9 @@
+﻿WARNING: this executes preregistered H4 configuration C-4b.
+Level: system
+Runs: 5
+Type EXECUTE to continue: C-4b system run 6: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (d1 alone failed=True, d2 alone worked=True) => PASS
+C-4b system run 7: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (d1 alone failed=True, d2 alone worked=True) => PASS
+C-4b system run 8: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (d1 alone failed=True, d2 alone worked=True) => PASS
+C-4b system run 9: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (d1 alone failed=True, d2 alone worked=True) => PASS
+C-4b system run 10: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (d1 alone failed=True, d2 alone worked=True) => PASS
+Summary: {'PASS': 5}

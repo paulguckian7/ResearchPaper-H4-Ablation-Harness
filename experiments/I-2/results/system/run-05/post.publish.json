@@ -1,0 +1,6 @@
+{
+  "connected": true,
+  "publish_rc": 0,
+  "puback_reason_value": 135,
+  "puback_reason_str": "Not authorized"
+}

@@ -1,0 +1,43 @@
+{
+  "test": "C-4c",
+  "sub": "i",
+  "harness_version": "0.2.0",
+  "run": 6,
+  "level": "system",
+  "timestamp_utc": "2026-09-13T07:39:06.388575+00:00",
+  "stopped_service": "gateway-h",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "post_observed": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "resolver_d1_probe_ok": false,
+  "resolver_d2_probe_ok": false,
+  "outcome": "PASS",
+  "source_sha256": {
+    "C-4c.yaml": "137404b3890351314f9a4fc9f9b8971d43b8b11de1a3b75edb69fe987c4f8ec7",
+    "docker-compose.yml": "d51ab434d6b1690bce69af3202130eb05b360a5e2e10190eced8620f927f37a4",
+    "resolver.py": "76dc85227b682ee709647ea15a0fa7c46307d34c142c4c5fbf3b6b27e51fff86",
+    "target.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "81013c945cc6a89dbbc1a5d39a65fe4d36df29c66a797cdee69cdbffe62ca90f"
+  }
+}

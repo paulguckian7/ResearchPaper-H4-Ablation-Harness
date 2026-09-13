@@ -1,9 +1,9 @@
 ﻿WARNING: this executes preregistered H4 configuration C-2.
 Level: system
 Runs: 5
-Type EXECUTE to continue: C-2 system run 8: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
-C-2 system run 9: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
-C-2 system run 10: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
-C-2 system run 11: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
-C-2 system run 12: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
+Type EXECUTE to continue: C-2 system run 14: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
+C-2 system run 15: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
+C-2 system run 16: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
+C-2 system run 17: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
+C-2 system run 18: baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) (router1 alone failed=True, router2 alone worked=True) => PASS
 Summary: {'PASS': 5}

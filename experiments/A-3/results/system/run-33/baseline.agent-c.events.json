@@ -1,0 +1,35 @@
+[
+  {
+    "ts": 1789281536.2447844,
+    "event": "reset"
+  },
+  {
+    "ts": 1789281538.7179835,
+    "event": "interface_admit",
+    "source": "C"
+  },
+  {
+    "ts": 1789281538.7182515,
+    "event": "handler_reached",
+    "source": "C",
+    "value": 42,
+    "marker": false
+  },
+  {
+    "ts": 1789281538.7184775,
+    "event": "state_write",
+    "source": "C",
+    "value": 42
+  },
+  {
+    "ts": 1789281539.1436448,
+    "event": "handler_reached",
+    "source": "internal-x-marker",
+    "value": 0,
+    "marker": true
+  },
+  {
+    "ts": 1789281539.989584,
+    "event": "authority_probe_write"
+  }
+]

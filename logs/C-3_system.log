@@ -1,14 +1,14 @@
 ﻿WARNING: this executes preregistered H4 configuration C-3 (two sub-ablations, each from a fresh build).
 Level: system
 Runs (each): 5
-Type EXECUTE to continue: C-3a system run 5 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
-C-3b system run 5 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
-C-3a system run 6 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
-C-3b system run 6 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
-C-3a system run 7 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
-C-3b system run 7 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
-C-3a system run 8 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
-C-3b system run 8 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
-C-3a system run 9 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
-C-3b system run 9 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+Type EXECUTE to continue: C-3a system run 11 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-3b system run 11 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-3a system run 12 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-3b system run 12 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-3a system run 13 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-3b system run 13 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-3a system run 14 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-3b system run 14 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-3a system run 15 (stopped gateway): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-3b system run 15 (stopped router1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
 Summary: {'a:PASS': 5, 'b:PASS': 5}

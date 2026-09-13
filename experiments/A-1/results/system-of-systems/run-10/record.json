@@ -1,0 +1,51 @@
+{
+  "test": "A-1",
+  "harness_version": "0.2.0",
+  "run": 10,
+  "level": "system-of-systems",
+  "timestamp_utc": "2026-09-13T07:17:15.883659+00:00",
+  "baseline_T": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "post_T": [
+    1,
+    1,
+    0,
+    0
+  ],
+  "control_prediction_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "control_C": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "A-1.yaml": "3a89f1fdda641c3fce07e4f983e2e4c9c090c04b7295304fb5277eaea76a5061",
+    "docker-compose.yml": "4dfad73d416b58692ec4055a139cf6ad8feb843e1fc5d9045d663ad0451d1c78",
+    "rp.py": "0481d73417790c6c422d7ec9340e7ce831abddb790b14e449320ba233b266601",
+    "issue_and_send.py": "1aadec6d01902d837bbb6e7ac2e483446d768ec4506dd5ab26f3115307374e23"
+  },
+  "note": "Forged-signature sanity check is run manually, not part of automated PASS/FAIL -- see manifest 'sanity_check'."
+}

@@ -1,0 +1,8 @@
+{
+  "process_uid": 10003,
+  "process_gid": 10003,
+  "state_owner_uid": 10003,
+  "state_mode": "0o644",
+  "state_writable_by_process": true,
+  "data_dir_writable_by_process": true
+}

@@ -1,9 +1,9 @@
 ﻿WARNING: this executes preregistered H4 configuration A-6.
 Level: system
 Runs: 5
-Type EXECUTE to continue: A-6 system run 6: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
-A-6 system run 7: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
-A-6 system run 8: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
-A-6 system run 9: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
-A-6 system run 10: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
+Type EXECUTE to continue: A-6 system run 12: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
+A-6 system run 13: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
+A-6 system run 14: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
+A-6 system run 15: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
+A-6 system run 16: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C(control)=(1, 1, 1, 1) => PASS
 Summary: {'PASS': 5}

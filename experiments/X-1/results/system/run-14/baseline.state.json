@@ -1,0 +1,7 @@
+{
+  "state": {
+    "test_value": 42,
+    "marker_seen": false,
+    "authority_probe": null
+  }
+}

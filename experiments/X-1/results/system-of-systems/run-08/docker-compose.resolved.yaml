@@ -1,0 +1,47 @@
+name: x-1
+services:
+  router:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-1\router
+      dockerfile: Dockerfile
+    container_name: h4-x1-router
+    environment:
+      NEXT_HOP: http://sink:8080
+      ROUTE_TABLE_CLEARABLE: "1"
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18110"
+      protocol: tcp
+  sink:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-1\sink
+      dockerfile: Dockerfile
+    container_name: h4-x1-sink
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18111"
+      protocol: tcp
+  source:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-1\source
+      dockerfile: Dockerfile
+    container_name: h4-x1-source
+    depends_on:
+      router:
+        condition: service_started
+      sink:
+        condition: service_started
+    networks:
+      h4net: null
+networks:
+  h4net:
+    name: x-1_h4net
+    driver: bridge

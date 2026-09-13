@@ -1,0 +1,10 @@
+[
+  {
+    "ts": 1789283113.9618433,
+    "event": "reset"
+  },
+  {
+    "ts": 1789283146.1215298,
+    "event": "authority_probe_write"
+  }
+]

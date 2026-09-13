@@ -1,0 +1,8 @@
+﻿Dry run only: C-4c WILL NOT BE EXECUTED.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+Python 3.10.11
+
+Docker Compose configuration validates successfully.
+Harness is ready. Runs C-4c-i (stop gateway-h) and C-4c-ii (stop resolver-d1) from separate fresh builds.

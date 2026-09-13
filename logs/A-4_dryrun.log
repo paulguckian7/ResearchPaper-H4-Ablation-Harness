@@ -1,0 +1,11 @@
+﻿Dry run only: A-4 WILL NOT BE EXECUTED.
+
+THIS IS THE LEAST-VERIFIED HARNESS IN THE SUITE.
+No ClamAV binaries or mirror-network access were available to test this during development.
+Recommend reading manifests/A-4.yaml 'known_risks' in full before running.
+
+Docker version 20.10.16, build aa7e414
+Docker Compose version v2.6.0
+
+Docker Compose configuration validates successfully.
+Harness is ready. First run will take several minutes (signature download).

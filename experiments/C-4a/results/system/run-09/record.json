@@ -1,0 +1,39 @@
+{
+  "test": "C-4a",
+  "harness_version": "0.2.0",
+  "run": 9,
+  "level": "system",
+  "timestamp_utc": "2026-09-13T07:31:50.594943+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "post_observed": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "C-4a.yaml": "0106b45f29c7e359334057e820d0926cc7a4de30c7b03e90281b19298a2f3e71",
+    "docker-compose.yml": "4e5e6e663385a82a6463c9cdc37900c71b94cef54e7ad191b5d0b7f5c0082c7d",
+    "resolver.py": "76dc85227b682ee709647ea15a0fa7c46307d34c142c4c5fbf3b6b27e51fff86",
+    "target.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "81013c945cc6a89dbbc1a5d39a65fe4d36df29c66a797cdee69cdbffe62ca90f"
+  }
+}

@@ -1,0 +1,47 @@
+name: x-2
+services:
+  proxy:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-2\proxy
+      dockerfile: Dockerfile
+    container_name: h4-x2-proxy
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18410"
+      protocol: tcp
+  sink:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-2\sink
+      dockerfile: Dockerfile
+    container_name: h4-x2-sink
+    depends_on:
+      proxy:
+        condition: service_started
+    networks:
+      h4net: null
+    ports:
+    - mode: ingress
+      host_ip: 127.0.0.1
+      target: 8080
+      published: "18411"
+      protocol: tcp
+  source:
+    build:
+      context: C:\Research\H4_Ablation_Harness\experiments\X-2\source
+      dockerfile: Dockerfile
+    container_name: h4-x2-source
+    depends_on:
+      proxy:
+        condition: service_started
+      sink:
+        condition: service_started
+    networks:
+      h4net: null
+networks:
+  h4net:
+    name: x-2_h4net
+    driver: bridge

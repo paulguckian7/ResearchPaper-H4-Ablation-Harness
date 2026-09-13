@@ -1,0 +1,14 @@
+﻿WARNING: this executes UNTESTED H4 configuration X-2.
+Level: system
+Runs: 5
+Type EXECUTE to continue: X-2 system run 3: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+  (UNTESTED harness -- review baseline.probe.json / post.probe.json before trusting this verdict)
+X-2 system run 4: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+  (UNTESTED harness -- review baseline.probe.json / post.probe.json before trusting this verdict)
+X-2 system run 5: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+  (UNTESTED harness -- review baseline.probe.json / post.probe.json before trusting this verdict)
+X-2 system run 6: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+  (UNTESTED harness -- review baseline.probe.json / post.probe.json before trusting this verdict)
+X-2 system run 7: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+  (UNTESTED harness -- review baseline.probe.json / post.probe.json before trusting this verdict)
+Summary: {'PASS': 5}

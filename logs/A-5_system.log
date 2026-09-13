@@ -1,9 +1,9 @@
 ﻿WARNING: this executes preregistered H4 configuration A-5 (negative case).
 Level: system
 Runs: 5
-Type EXECUTE to continue: A-5 system run 7: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
-A-5 system run 8: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
-A-5 system run 9: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
-A-5 system run 10: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
-A-5 system run 11: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
+Type EXECUTE to continue: A-5 system run 13: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
+A-5 system run 14: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
+A-5 system run 15: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
+A-5 system run 16: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
+A-5 system run 17: baseline T=(1, 1, 1, 1) C=(1, 1, 1, 1) | post T=(1, 1, 0, 0) C=(1, 1, 0, 0) => PASS (confirms non-source-specific: reclassify as Concentration)
 Ran 5 runs; see individual outcomes above.

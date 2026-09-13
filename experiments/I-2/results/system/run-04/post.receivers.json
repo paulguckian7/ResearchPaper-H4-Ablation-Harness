@@ -1,0 +1,14 @@
+{
+  "receiver-1": {
+    "got_message": false,
+    "payload": null
+  },
+  "receiver-2": {
+    "got_message": false,
+    "payload": null
+  },
+  "receiver-3": {
+    "got_message": false,
+    "payload": null
+  }
+}

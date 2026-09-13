@@ -1,0 +1,77 @@
+{
+  "test": "C-1",
+  "harness_version": "0.2.0",
+  "run": 14,
+  "level": "system",
+  "timestamp_utc": "2026-09-13T06:54:34.016152+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "post_observed": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "C-1.yaml": "6adb95efb734fa4366b7501015d181e484769ee39aabb92a2b670e644c074928",
+    "docker-compose.yml": "db263fcbb01006299eea067f7fb19db12f8f26c01e5849b0931599ea677a5109",
+    "router.py": "3cbee299f8a4c3f22bfdf9f9554d369e6fb2a9a4f6e09c7e98865232a79d72d5",
+    "sink.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "4ddefd7ef95e854e3c0101be7dff01613eabb86f39c4ed098dda39f1f91f9a5b"
+  },
+  "probe_baseline": {
+    "status": 200,
+    "body": {
+      "admitted": true,
+      "routed": true,
+      "downstream": {
+        "admitted": true,
+        "marker_seen": true,
+        "route": "router1"
+      }
+    }
+  },
+  "probe_post": {
+    "status": 0,
+    "body": {
+      "error": "URLError(gaierror(-3, 'Temporary failure in name resolution'))"
+    }
+  },
+  "op_baseline": {
+    "router": "router1",
+    "status": 200,
+    "body": {
+      "admitted": true,
+      "routed": true,
+      "downstream": {
+        "admitted": true,
+        "written": 42,
+        "route": "router1"
+      }
+    }
+  },
+  "op_post": {
+    "router": null,
+    "status": 0,
+    "body": {
+      "error": "no route succeeded"
+    }
+  }
+}

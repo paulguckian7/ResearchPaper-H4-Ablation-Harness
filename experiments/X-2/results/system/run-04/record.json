@@ -1,0 +1,40 @@
+{
+  "test": "X-2",
+  "harness_version": "0.2.0",
+  "run": 4,
+  "level": "system",
+  "timestamp_utc": "2026-09-13T07:53:47.069230+00:00",
+  "baseline_prediction": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "baseline_observed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "post_prediction": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "post_observed": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "outcome": "PASS",
+  "source_sha256": {
+    "X-2.yaml": "b069ffcd501431957b56d7e89f210ff56fa7eddab8d092b0f152682f46be1710",
+    "docker-compose.yml": "eb36ef55a6fc46338d46cd7287cb11cfed469234558d3db723f1c672beb18652",
+    "nginx.baseline.conf": "4d6feebb0f162e784a712dff164813aeebbd758295301bc1767f8145b0d58271",
+    "nginx.ablated.conf": "d850afad053bfecd96ea369873ab5773febd8cf1bb25413fc37c86f197a198f5",
+    "sink.py": "d6f8ffce2ea1fc1767c91e00efd13668c61c3eb8f23d151e864662e203e77030",
+    "send.py": "7fd8ab0b454619955ca47c9930d319f182544c3633a5e83105db04e7c5274d89"
+  }
+}

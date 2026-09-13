@@ -1,0 +1,14 @@
+﻿WARNING: this executes preregistered H4 configuration C-4c (two sub-ablations, each from a fresh build).
+Level: system
+Runs (each): 5
+Type EXECUTE to continue: C-4ci system run 6 (stopped gateway-h): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-4cii system run 6 (stopped resolver-d1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-4ci system run 7 (stopped gateway-h): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-4cii system run 7 (stopped resolver-d1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-4ci system run 8 (stopped gateway-h): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-4cii system run 8 (stopped resolver-d1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-4ci system run 9 (stopped gateway-h): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-4cii system run 9 (stopped resolver-d1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+C-4ci system run 10 (stopped gateway-h): baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+C-4cii system run 10 (stopped resolver-d1): baseline=(1, 1, 1, 1) post=(1, 1, 1, 1) => PASS
+Summary: {'i:PASS': 5, 'ii:PASS': 5}

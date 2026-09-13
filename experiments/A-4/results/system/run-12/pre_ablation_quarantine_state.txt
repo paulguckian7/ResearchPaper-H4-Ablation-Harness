@@ -1,0 +1,3 @@
+total 8
+drwxr-xr-x    2 clamav   clamav        4096 Sep 13 07:57 .
+drwxr-xr-x    1 root     root          4096 Sep 13 07:57 ..

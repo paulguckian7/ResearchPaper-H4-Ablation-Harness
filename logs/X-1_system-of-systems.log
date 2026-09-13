@@ -1,0 +1,9 @@
+﻿WARNING: this executes preregistered H4 configuration X-1.
+Level: system-of-systems
+Runs: 5
+Type EXECUTE to continue: X-1 system-of-systems run 7: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+X-1 system-of-systems run 8: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+X-1 system-of-systems run 9: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+X-1 system-of-systems run 10: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+X-1 system-of-systems run 11: baseline=(1, 1, 1, 1) post=(1, 0, 1, 0) => PASS
+Summary: {'PASS': 5}
